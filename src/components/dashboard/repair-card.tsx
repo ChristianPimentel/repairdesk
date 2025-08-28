@@ -56,6 +56,12 @@ interface RepairCardProps {
   technicians: Technician[];
   customers: Customer[];
   preselectedCustomerId?: string | null;
+  preselectedDeviceType?: string | null;
+  preselectedBrand?: string | null;
+  preselectedModel?: string | null;
+  preselectedPasswordPin?: string | null;
+  preselectedAccessories?: string[];
+  preselectedProblemNotes?: string | null;
 }
 
 const deviceTypes = [
@@ -87,7 +93,18 @@ const initialAccessoryOptions: MultiSelectOption[] = [
     { value: 'headphones', label: 'Headphones' },
 ];
 
-export function RepairCard({ onCreateRepair, technicians, customers, preselectedCustomerId }: RepairCardProps) {
+export function RepairCard({ 
+    onCreateRepair, 
+    technicians, 
+    customers, 
+    preselectedCustomerId,
+    preselectedDeviceType,
+    preselectedBrand,
+    preselectedModel,
+    preselectedPasswordPin,
+    preselectedAccessories,
+    preselectedProblemNotes,
+}: RepairCardProps) {
   const { user } = useUser();
   const isMobile = useIsMobile();
   const [selectedCustomerId, setSelectedCustomerId] = useState(preselectedCustomerId ?? '');
@@ -111,10 +128,23 @@ export function RepairCard({ onCreateRepair, technicians, customers, preselected
   const { toast } = useToast();
   
   useEffect(() => {
-    if (preselectedCustomerId) {
-      setSelectedCustomerId(preselectedCustomerId);
-    }
-  }, [preselectedCustomerId]);
+    // This effect handles all pre-selected values from props
+    if (preselectedCustomerId) setSelectedCustomerId(preselectedCustomerId);
+    if (preselectedDeviceType) setDeviceType(preselectedDeviceType);
+    if (preselectedBrand) setBrand(preselectedBrand);
+    if (preselectedModel) setModel(preselectedModel);
+    if (preselectedPasswordPin) setPasswordPin(preselectedPasswordPin);
+    if (preselectedAccessories) setAccessories(preselectedAccessories);
+    if (preselectedProblemNotes) setProblemNotes(preselectedProblemNotes);
+  }, [
+    preselectedCustomerId, 
+    preselectedDeviceType, 
+    preselectedBrand, 
+    preselectedModel, 
+    preselectedPasswordPin, 
+    preselectedAccessories, 
+    preselectedProblemNotes
+  ]);
 
   const resetForm = () => {
     setSelectedCustomerId('');

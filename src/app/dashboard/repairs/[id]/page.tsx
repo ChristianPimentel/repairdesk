@@ -187,32 +187,23 @@ export default function RepairDetailsPage() {
         return techIdentifier;
     };
     
-    const handleCloneRepair = async () => {
-        try {
-            const { id, createdAt, readyAt, archivedAt, ...clonedData } = repair;
-            
-            const docRef = await addDoc(collection(db, 'repairs'), {
-                ...clonedData,
-                status: 'Pending',
-                createdAt: serverTimestamp(),
-                readyAt: null,
-                archivedAt: null,
-            });
-
-            toast({
-                title: 'Repair Cloned',
-                description: `A new repair for ${repair.customerName} has been created.`,
-            });
-            
-            router.push(`/dashboard/repairs/${docRef.id}`);
-        } catch (error) {
-            console.error("Error cloning repair: ", error);
-            toast({
-                title: 'Error',
-                description: 'Could not clone repair.',
-                variant: 'destructive',
-            });
+    const handleCloneRepair = () => {
+        if (!repair) return;
+    
+        const queryParams = new URLSearchParams();
+        queryParams.set('customerId', repair.customerId);
+        queryParams.set('deviceType', repair.deviceType);
+        queryParams.set('brand', repair.brand);
+        queryParams.set('model', repair.model);
+        if (repair.passwordPin) {
+            queryParams.set('passwordPin', repair.passwordPin);
         }
+        if (repair.accessories && repair.accessories.length > 0) {
+            queryParams.set('accessories', repair.accessories.join(','));
+        }
+        queryParams.set('problemNotes', repair.problemNotes);
+
+        router.push(`/dashboard/new-repair?${queryParams.toString()}`);
     }
     
     const handleDeleteRepair = async () => {

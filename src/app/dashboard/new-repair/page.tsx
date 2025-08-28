@@ -45,13 +45,22 @@ function NewRepairContent() {
     const { technicians, customers } = useUser();
     const { toast } = useToast();
     const searchParams = useSearchParams();
-    const customerId = searchParams.get('customerId');
+    
     const [qrCodeUrl, setQrCodeUrl] = useState('');
     const [repairStatusUrl, setRepairStatusUrl] = useState('');
     const [newRepairId, setNewRepairId] = useState('');
     const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
     const [showShare, setShowShare] = useState(false);
     const [customerPhone, setCustomerPhone] = useState('');
+    
+    // Extracting all potential query params for cloning
+    const customerId = searchParams.get('customerId');
+    const deviceType = searchParams.get('deviceType');
+    const brand = searchParams.get('brand');
+    const model = searchParams.get('model');
+    const passwordPin = searchParams.get('passwordPin');
+    const accessories = searchParams.get('accessories');
+    const problemNotes = searchParams.get('problemNotes');
     
     useEffect(() => {
         if (typeof window !== 'undefined' && navigator.share) {
@@ -164,6 +173,12 @@ function NewRepairContent() {
                     technicians={technicians}
                     customers={customers}
                     preselectedCustomerId={customerId}
+                    preselectedDeviceType={deviceType}
+                    preselectedBrand={brand}
+                    preselectedModel={model}
+                    preselectedPasswordPin={passwordPin}
+                    preselectedAccessories={accessories ? accessories.split(',') : undefined}
+                    preselectedProblemNotes={problemNotes}
                 />
             </div>
             <Dialog open={isQrDialogOpen} onOpenChange={(isOpen) => {
