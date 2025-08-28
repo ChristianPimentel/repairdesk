@@ -116,9 +116,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    setUser(null);
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('tempUser');
+    setUser(null);
   };
 
   return (

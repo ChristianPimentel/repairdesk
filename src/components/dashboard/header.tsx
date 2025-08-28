@@ -42,8 +42,8 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    logout();
     router.push('/');
+    logout();
   };
 
   const navLinks = [
