@@ -55,6 +55,7 @@ interface RepairCardProps {
   onCreateRepair: (repair: Omit<Repair, 'id' | 'createdAt' | 'readyAt' | 'archivedAt'>) => void;
   technicians: Technician[];
   customers: Customer[];
+  existingRepair?: Repair;
   preselectedCustomerId?: string | null;
   preselectedDeviceType?: string | null;
   preselectedBrand?: string | null;
@@ -97,6 +98,7 @@ export function RepairCard({
     onCreateRepair, 
     technicians, 
     customers, 
+    existingRepair,
     preselectedCustomerId,
     preselectedDeviceType,
     preselectedBrand,
@@ -126,25 +128,31 @@ export function RepairCard({
   const [newAccessory, setNewAccessory] = useState('');
 
   const { toast } = useToast();
+  const isEditMode = !!existingRepair;
   
   useEffect(() => {
-    // This effect handles all pre-selected values from props
-    if (preselectedCustomerId) setSelectedCustomerId(preselectedCustomerId);
-    if (preselectedDeviceType) setDeviceType(preselectedDeviceType);
-    if (preselectedBrand) setBrand(preselectedBrand);
-    if (preselectedModel) setModel(preselectedModel);
-    if (preselectedPasswordPin) setPasswordPin(preselectedPasswordPin);
-    if (preselectedAccessories) setAccessories(preselectedAccessories);
-    if (preselectedProblemNotes) setProblemNotes(preselectedProblemNotes);
-  }, [
-    preselectedCustomerId, 
-    preselectedDeviceType, 
-    preselectedBrand, 
-    preselectedModel, 
-    preselectedPasswordPin, 
-    preselectedAccessories, 
-    preselectedProblemNotes
-  ]);
+    if (existingRepair) {
+        setSelectedCustomerId(existingRepair.customerId);
+        setDeviceType(existingRepair.deviceType);
+        setBrand(existingRepair.brand);
+        setModel(existingRepair.model);
+        setPasswordPin(existingRepair.passwordPin ?? '');
+        setAccessories(existingRepair.accessories);
+        setProblemNotes(existingRepair.problemNotes);
+        setAssignedTo(existingRepair.assignedToName);
+        if (typeof existingRepair.signature === 'string') {
+            setTypedSignature(existingRepair.signature);
+        }
+    } else {
+        if (preselectedCustomerId) setSelectedCustomerId(preselectedCustomerId);
+        if (preselectedDeviceType) setDeviceType(preselectedDeviceType);
+        if (preselectedBrand) setBrand(preselectedBrand);
+        if (preselectedModel) setModel(preselectedModel);
+        if (preselectedPasswordPin) setPasswordPin(preselectedPasswordPin);
+        if (preselectedAccessories) setAccessories(preselectedAccessories);
+        if (preselectedProblemNotes) setProblemNotes(preselectedProblemNotes);
+    }
+  }, [existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes]);
 
   const resetForm = () => {
     setSelectedCustomerId('');
@@ -168,6 +176,7 @@ export function RepairCard({
   }
   
   useEffect(() => {
+    if (isEditMode) return;
     if (user?.role === 'Admin') {
         if (!assignedTo) {
             setAssignedTo('To Be Determined');
@@ -176,10 +185,10 @@ export function RepairCard({
         const studentTech = technicians.find(t => t.email === user.email);
         setAssignedTo(studentTech?.name ?? '');
     }
-  }, [technicians, user, assignedTo]);
+  }, [technicians, user, assignedTo, isEditMode]);
 
 
-  const handleCreate = () => {
+  const handleCreateOrUpdate = () => {
     const selectedCustomer = customers.find(c => c.id === selectedCustomerId);
     if (!selectedCustomer) {
       toast({
@@ -200,7 +209,7 @@ export function RepairCard({
     }
     
     const signatureData = isMobile ? signatureRef.current?.getSignature() : typedSignature;
-    if(!signatureData) {
+    if(!signatureData && !isEditMode) {
         toast({
             title: 'Signature Required',
             description: 'Please have the customer sign for liability.',
@@ -227,14 +236,16 @@ export function RepairCard({
         passwordPin,
         accessories,
         problemNotes,
-        status: 'Pending' as const,
-        signature: signatureData,
+        status: existingRepair?.status || 'Pending' as const,
+        signature: signatureData || existingRepair?.signature || null,
         assignedToName: assignedTo,
     };
     
     onCreateRepair(newRepair);
     
-    resetForm();
+    if (!isEditMode) {
+      resetForm();
+    }
   };
   
   const handleAddNewBrand = () => {
@@ -284,10 +295,14 @@ export function RepairCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>New Repair Intake</CardTitle>
-        <CardDescription>
-          Fill in the details for the new repair job.
-        </CardDescription>
+        <div className="flex items-start justify-between">
+            <div>
+                <CardTitle>{isEditMode ? `Editing Repair #${existingRepair.id.slice(-6).toUpperCase()}`: 'New Repair Intake'}</CardTitle>
+                <CardDescription>
+                {isEditMode ? `Update the details for this repair.` : `Fill in the details for the new repair job.`}
+                </CardDescription>
+            </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
@@ -433,6 +448,7 @@ export function RepairCard({
                 value={typedSignature}
                 onChange={(e) => setTypedSignature(e.target.value)}
                 className="pl-9 font-signature text-2xl h-12"
+                disabled={isEditMode}
               />
             </div>
           )}
@@ -445,10 +461,12 @@ export function RepairCard({
             } else {
                 setTypedSignature('')
             }
-        }}>
+        }}
+        disabled={isEditMode && !isMobile}
+        >
           Clear Signature
         </Button>
-        <Button onClick={handleCreate}>Create Repair Ticket</Button>
+        <Button onClick={handleCreateOrUpdate}>{isEditMode ? "Update Repair Ticket" : "Create Repair Ticket"}</Button>
       </CardFooter>
 
       <Dialog open={isAddBrandOpen} onOpenChange={setIsAddBrandOpen}>

@@ -27,7 +27,8 @@ import {
     Share2,
     MessageSquare,
     ChevronLeft,
-    Trash2
+    Trash2,
+    Pencil
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -298,35 +299,43 @@ export default function RepairDetailsPage() {
                         Viewing details for the repair of a {repair.brand} {repair.model}.
                     </CardDescription>
                 </div>
-                {repair.status === 'Archived' && (
-                    <div className="flex gap-2">
-                        <Button type="button" variant="outline" onClick={handleCloneRepair}>
-                            <Copy className='mr-2 h-4 w-4' />
-                            Clone Repair
+                <div className="flex gap-2">
+                    {repair.status !== 'Archived' && (
+                         <Button type="button" variant="outline" onClick={() => router.push(`/dashboard/edit-repair/${repair.id}`)}>
+                            <Pencil className='mr-2 h-4 w-4' />
+                            Edit
                         </Button>
-                         {user?.role === 'Admin' && (
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button variant="destructive">
-                                        <Trash2 className="mr-2 h-4 w-4" /> Delete
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete the repair record for #{repair.id.slice(-6).toUpperCase()}.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={handleDeleteRepair}>Delete</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                        )}
-                    </div>
-                )}
+                    )}
+                    {repair.status === 'Archived' && (
+                        <>
+                            <Button type="button" variant="outline" onClick={handleCloneRepair}>
+                                <Copy className='mr-2 h-4 w-4' />
+                                Clone Repair
+                            </Button>
+                            {user?.role === 'Admin' && (
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="destructive">
+                                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete the repair record for #{repair.id.slice(-6).toUpperCase()}.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={handleDeleteRepair}>Delete</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            )}
+                        </>
+                    )}
+                </div>
             </div>
         </CardHeader>
         
@@ -441,5 +450,3 @@ export default function RepairDetailsPage() {
     </div>
   );
 }
-
-  

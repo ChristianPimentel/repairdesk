@@ -507,29 +507,21 @@ function RepairDetailsPage() {
         if (technicianByName) return technicianByName.name;
         return techIdentifier;
     };
-    const handleCloneRepair = async ()=>{
-        try {
-            const { id, createdAt, readyAt, archivedAt, ...clonedData } = repair;
-            const docRef = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$node$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addDoc"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$node$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["collection"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$firebase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["db"], 'repairs'), {
-                ...clonedData,
-                status: 'Pending',
-                createdAt: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$node$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["serverTimestamp"])(),
-                readyAt: null,
-                archivedAt: null
-            });
-            toast({
-                title: 'Repair Cloned',
-                description: `A new repair for ${repair.customerName} has been created.`
-            });
-            router.push(`/dashboard/repairs/${docRef.id}`);
-        } catch (error) {
-            console.error("Error cloning repair: ", error);
-            toast({
-                title: 'Error',
-                description: 'Could not clone repair.',
-                variant: 'destructive'
-            });
+    const handleCloneRepair = ()=>{
+        if (!repair) return;
+        const queryParams = new URLSearchParams();
+        queryParams.set('customerId', repair.customerId);
+        queryParams.set('deviceType', repair.deviceType);
+        queryParams.set('brand', repair.brand);
+        queryParams.set('model', repair.model);
+        if (repair.passwordPin) {
+            queryParams.set('passwordPin', repair.passwordPin);
         }
+        if (repair.accessories && repair.accessories.length > 0) {
+            queryParams.set('accessories', repair.accessories.join(','));
+        }
+        queryParams.set('problemNotes', repair.problemNotes);
+        router.push(`/dashboard/new-repair?${queryParams.toString()}`);
     };
     const handleDeleteRepair = async ()=>{
         if (!repair) return;
@@ -634,14 +626,14 @@ function RepairDetailsPage() {
                                                 className: "mr-2 h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 301,
+                                                lineNumber: 292,
                                                 columnNumber: 25
                                             }, this),
                                             " Back"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 300,
+                                        lineNumber: 291,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -651,7 +643,7 @@ function RepairDetailsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 303,
+                                        lineNumber: 294,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -664,13 +656,13 @@ function RepairDetailsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 306,
+                                        lineNumber: 297,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                lineNumber: 299,
+                                lineNumber: 290,
                                 columnNumber: 17
                             }, this),
                             repair.status === 'Archived' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -685,14 +677,14 @@ function RepairDetailsPage() {
                                                 className: "mr-2 h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 313,
+                                                lineNumber: 304,
                                                 columnNumber: 29
                                             }, this),
                                             "Clone Repair"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 312,
+                                        lineNumber: 303,
                                         columnNumber: 25
                                     }, this),
                                     user?.role === 'Admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialog"], {
@@ -706,19 +698,19 @@ function RepairDetailsPage() {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                            lineNumber: 320,
+                                                            lineNumber: 311,
                                                             columnNumber: 41
                                                         }, this),
                                                         " Delete"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                    lineNumber: 319,
+                                                    lineNumber: 310,
                                                     columnNumber: 37
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 318,
+                                                lineNumber: 309,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogContent"], {
@@ -729,7 +721,7 @@ function RepairDetailsPage() {
                                                                 children: "Are you absolutely sure?"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 325,
+                                                                lineNumber: 316,
                                                                 columnNumber: 41
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogDescription"], {
@@ -740,13 +732,13 @@ function RepairDetailsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 326,
+                                                                lineNumber: 317,
                                                                 columnNumber: 41
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 324,
+                                                        lineNumber: 315,
                                                         columnNumber: 37
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogFooter"], {
@@ -755,7 +747,7 @@ function RepairDetailsPage() {
                                                                 children: "Cancel"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 331,
+                                                                lineNumber: 322,
                                                                 columnNumber: 41
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogAction"], {
@@ -763,42 +755,42 @@ function RepairDetailsPage() {
                                                                 children: "Delete"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 332,
+                                                                lineNumber: 323,
                                                                 columnNumber: 41
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 330,
+                                                        lineNumber: 321,
                                                         columnNumber: 37
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 323,
+                                                lineNumber: 314,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 317,
+                                        lineNumber: 308,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                lineNumber: 311,
+                                lineNumber: 302,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                        lineNumber: 298,
+                        lineNumber: 289,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                    lineNumber: 297,
+                    lineNumber: 288,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -817,14 +809,14 @@ function RepairDetailsPage() {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 347,
+                                                        lineNumber: 338,
                                                         columnNumber: 84
                                                     }, this),
                                                     "Customer Information"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 347,
+                                                lineNumber: 338,
                                                 columnNumber: 25
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -833,23 +825,23 @@ function RepairDetailsPage() {
                                                     children: repair.customerName
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                    lineNumber: 349,
+                                                    lineNumber: 340,
                                                     columnNumber: 29
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 348,
+                                                lineNumber: 339,
                                                 columnNumber: 25
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 346,
+                                        lineNumber: 337,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 353,
+                                        lineNumber: 344,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -861,14 +853,14 @@ function RepairDetailsPage() {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 356,
+                                                        lineNumber: 347,
                                                         columnNumber: 84
                                                     }, this),
                                                     "Device Information"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 356,
+                                                lineNumber: 347,
                                                 columnNumber: 25
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -882,7 +874,7 @@ function RepairDetailsPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 358,
+                                                        lineNumber: 349,
                                                         columnNumber: 29
                                                     }, this),
                                                     repair.passwordPin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -892,7 +884,7 @@ function RepairDetailsPage() {
                                                                 className: "h-3 w-3"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 360,
+                                                                lineNumber: 351,
                                                                 columnNumber: 72
                                                             }, this),
                                                             " PIN: ",
@@ -900,24 +892,24 @@ function RepairDetailsPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 360,
+                                                        lineNumber: 351,
                                                         columnNumber: 33
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 357,
+                                                lineNumber: 348,
                                                 columnNumber: 25
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 355,
+                                        lineNumber: 346,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 365,
+                                        lineNumber: 356,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -929,14 +921,14 @@ function RepairDetailsPage() {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 368,
+                                                        lineNumber: 359,
                                                         columnNumber: 84
                                                     }, this),
                                                     "Accessories"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 368,
+                                                lineNumber: 359,
                                                 columnNumber: 25
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -947,28 +939,28 @@ function RepairDetailsPage() {
                                                             children: acc
                                                         }, acc, false, {
                                                             fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                            lineNumber: 372,
+                                                            lineNumber: 363,
                                                             columnNumber: 64
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                    lineNumber: 371,
+                                                    lineNumber: 362,
                                                     columnNumber: 29
                                                 }, this) : 'No accessories checked in.'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 369,
+                                                lineNumber: 360,
                                                 columnNumber: 25
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 367,
+                                        lineNumber: 358,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 378,
+                                        lineNumber: 369,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -980,14 +972,14 @@ function RepairDetailsPage() {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 381,
+                                                        lineNumber: 372,
                                                         columnNumber: 84
                                                     }, this),
                                                     "Problem Notes"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 381,
+                                                lineNumber: 372,
                                                 columnNumber: 25
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -995,19 +987,19 @@ function RepairDetailsPage() {
                                                 children: repair.problemNotes
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 382,
+                                                lineNumber: 373,
                                                 columnNumber: 25
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 380,
+                                        lineNumber: 371,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                lineNumber: 345,
+                                lineNumber: 336,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1022,14 +1014,14 @@ function RepairDetailsPage() {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 390,
+                                                        lineNumber: 381,
                                                         columnNumber: 84
                                                     }, this),
                                                     "Repair Status"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 390,
+                                                lineNumber: 381,
                                                 columnNumber: 25
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1040,7 +1032,7 @@ function RepairDetailsPage() {
                                                         children: repair.status
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 392,
+                                                        lineNumber: 383,
                                                         columnNumber: 29
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1051,24 +1043,24 @@ function RepairDetailsPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 393,
+                                                        lineNumber: 384,
                                                         columnNumber: 29
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 391,
+                                                lineNumber: 382,
                                                 columnNumber: 25
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 389,
+                                        lineNumber: 380,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 397,
+                                        lineNumber: 388,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1080,14 +1072,14 @@ function RepairDetailsPage() {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 400,
+                                                        lineNumber: 391,
                                                         columnNumber: 84
                                                     }, this),
                                                     "Timeline"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 400,
+                                                lineNumber: 391,
                                                 columnNumber: 25
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -1099,7 +1091,7 @@ function RepairDetailsPage() {
                                                                 children: "Created:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 402,
+                                                                lineNumber: 393,
                                                                 columnNumber: 33
                                                             }, this),
                                                             " ",
@@ -1107,7 +1099,7 @@ function RepairDetailsPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 402,
+                                                        lineNumber: 393,
                                                         columnNumber: 29
                                                     }, this),
                                                     repair.readyAt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -1116,7 +1108,7 @@ function RepairDetailsPage() {
                                                                 children: "Ready:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 403,
+                                                                lineNumber: 394,
                                                                 columnNumber: 52
                                                             }, this),
                                                             " ",
@@ -1124,7 +1116,7 @@ function RepairDetailsPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 403,
+                                                        lineNumber: 394,
                                                         columnNumber: 48
                                                     }, this),
                                                     repair.archivedAt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -1133,7 +1125,7 @@ function RepairDetailsPage() {
                                                                 children: "Archived:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 404,
+                                                                lineNumber: 395,
                                                                 columnNumber: 55
                                                             }, this),
                                                             " ",
@@ -1141,26 +1133,26 @@ function RepairDetailsPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 404,
+                                                        lineNumber: 395,
                                                         columnNumber: 51
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 401,
+                                                lineNumber: 392,
                                                 columnNumber: 25
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                        lineNumber: 399,
+                                        lineNumber: 390,
                                         columnNumber: 21
                                     }, this),
                                     repair.status !== 'Archived' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 410,
+                                                lineNumber: 401,
                                                 columnNumber: 25
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1170,7 +1162,7 @@ function RepairDetailsPage() {
                                                         children: "Customer Status QR Code"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 412,
+                                                        lineNumber: 403,
                                                         columnNumber: 29
                                                     }, this),
                                                     qrCodeUrl ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1185,12 +1177,12 @@ function RepairDetailsPage() {
                                                                     height: 150
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                    lineNumber: 416,
+                                                                    lineNumber: 407,
                                                                     columnNumber: 37
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 415,
+                                                                lineNumber: 406,
                                                                 columnNumber: 37
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1206,14 +1198,14 @@ function RepairDetailsPage() {
                                                                                 children: [
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(WhatsAppIcon, {}, void 0, false, {
                                                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                                        lineNumber: 422,
+                                                                                        lineNumber: 413,
                                                                                         columnNumber: 49
                                                                                     }, this),
                                                                                     " WhatsApp"
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                                lineNumber: 421,
+                                                                                lineNumber: 412,
                                                                                 columnNumber: 45
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1224,14 +1216,14 @@ function RepairDetailsPage() {
                                                                                 children: [
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$message$2d$square$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__MessageSquare$3e$__["MessageSquare"], {}, void 0, false, {
                                                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                                        lineNumber: 425,
+                                                                                        lineNumber: 416,
                                                                                         columnNumber: 49
                                                                                     }, this),
                                                                                     " SMS"
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                                lineNumber: 424,
+                                                                                lineNumber: 415,
                                                                                 columnNumber: 45
                                                                             }, this)
                                                                         ]
@@ -1244,14 +1236,14 @@ function RepairDetailsPage() {
                                                                         children: [
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$share$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Share2$3e$__["Share2"], {}, void 0, false, {
                                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                                lineNumber: 431,
+                                                                                lineNumber: 422,
                                                                                 columnNumber: 49
                                                                             }, this),
                                                                             " Other"
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                        lineNumber: 430,
+                                                                        lineNumber: 421,
                                                                         columnNumber: 45
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1262,39 +1254,39 @@ function RepairDetailsPage() {
                                                                         children: [
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$printer$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Printer$3e$__["Printer"], {}, void 0, false, {
                                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                                lineNumber: 435,
+                                                                                lineNumber: 426,
                                                                                 columnNumber: 45
                                                                             }, this),
                                                                             " Print"
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                        lineNumber: 434,
+                                                                        lineNumber: 425,
                                                                         columnNumber: 41
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                                lineNumber: 418,
+                                                                lineNumber: 409,
                                                                 columnNumber: 37
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 414,
+                                                        lineNumber: 405,
                                                         columnNumber: 33
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "text-sm text-muted-foreground",
                                                         children: "Generating QR Code..."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                        lineNumber: 440,
+                                                        lineNumber: 431,
                                                         columnNumber: 33
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                                lineNumber: 411,
+                                                lineNumber: 402,
                                                 columnNumber: 25
                                             }, this)
                                         ]
@@ -1302,29 +1294,29 @@ function RepairDetailsPage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                                lineNumber: 388,
+                                lineNumber: 379,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                        lineNumber: 343,
+                        lineNumber: 334,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-                    lineNumber: 342,
+                    lineNumber: 333,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-            lineNumber: 296,
+            lineNumber: 287,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/dashboard/repairs/[id]/page.tsx",
-        lineNumber: 295,
+        lineNumber: 286,
         columnNumber: 5
     }, this);
 }
