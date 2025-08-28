@@ -589,7 +589,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-function RepairsList({ repairs, technicians, onViewDetails }) {
+function RepairsList({ repairs, assignableUsers, onViewDetails }) {
     _s();
     const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"])();
@@ -620,22 +620,22 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
             });
         }
     };
-    const handleAssignTech = async (repairId, techName)=>{
-        if (techName === 'To Be Determined') return;
+    const handleAssignUser = async (repairId, userName)=>{
+        if (userName === 'To Be Determined') return;
         try {
             const repairRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm2017$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["doc"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$firebase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["db"], 'repairs', repairId);
             await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm2017$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["updateDoc"])(repairRef, {
-                assignedToName: techName
+                assignedToName: userName
             });
             toast({
-                title: "Technician Assigned",
-                description: `Repair assigned to ${techName}.`
+                title: "User Assigned",
+                description: `Repair assigned to ${userName}.`
             });
         } catch (error) {
-            console.error("Error assigning technician: ", error);
+            console.error("Error assigning user: ", error);
             toast({
                 title: 'Error',
-                description: 'Could not assign technician.',
+                description: 'Could not assign user.',
                 variant: 'destructive'
             });
         }
@@ -660,14 +660,10 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                 return '';
         }
     };
-    const getTechnicianName = (techIdentifier)=>{
-        if (!technicians || !techIdentifier || techIdentifier === 'To Be Determined') return 'To Be Determined';
-        const identifier = techIdentifier.toLowerCase();
-        const technicianByEmail = technicians.find((t)=>t.email.toLowerCase() === identifier);
-        if (technicianByEmail) return technicianByEmail.name;
-        const technicianByName = technicians.find((t)=>t.name.toLowerCase() === identifier);
-        if (technicianByName) return technicianByName.name;
-        return techIdentifier;
+    const getAssignedUserName = (userName)=>{
+        if (!assignableUsers || !userName || userName === 'To Be Determined') return 'To Be Determined';
+        const foundUser = assignableUsers.find((u)=>u.name.toLowerCase() === userName.toLowerCase());
+        return foundUser ? foundUser.name : userName;
     };
     const activeRepairs = (repairs || []).filter((r)=>r.status === 'Pending');
     const isAdmin = user?.role === 'Admin';
@@ -679,20 +675,20 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                         children: "Active Repairs"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                        lineNumber: 143,
+                        lineNumber: 135,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                         children: "An overview of all ongoing repair jobs. Click a row to see more details."
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                        lineNumber: 144,
+                        lineNumber: 136,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                lineNumber: 142,
+                lineNumber: 134,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -706,7 +702,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Customer"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                            lineNumber: 153,
+                                            lineNumber: 145,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -714,7 +710,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Device"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                            lineNumber: 154,
+                                            lineNumber: 146,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -722,7 +718,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Serviced By"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                            lineNumber: 155,
+                                            lineNumber: 147,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -730,7 +726,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Issue"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                            lineNumber: 156,
+                                            lineNumber: 148,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -738,14 +734,14 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Created"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                            lineNumber: 157,
+                                            lineNumber: 149,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
                                             children: "Status"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                            lineNumber: 158,
+                                            lineNumber: 150,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -753,18 +749,18 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Actions"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                            lineNumber: 159,
+                                            lineNumber: 151,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                    lineNumber: 152,
+                                    lineNumber: 144,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                lineNumber: 151,
+                                lineNumber: 143,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableBody"], {
@@ -779,7 +775,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                         children: repair.customerName
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                        lineNumber: 166,
+                                                        lineNumber: 158,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -791,13 +787,13 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                        lineNumber: 167,
+                                                        lineNumber: 159,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                lineNumber: 165,
+                                                lineNumber: 157,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -809,28 +805,28 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                lineNumber: 169,
+                                                lineNumber: 161,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
                                                 className: "hidden lg:table-cell",
                                                 onClick: (e)=>e.stopPropagation(),
                                                 children: isAdmin ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
-                                                    value: getTechnicianName(repair.assignedToName),
-                                                    onValueChange: (value)=>handleAssignTech(repair.id, value),
+                                                    value: getAssignedUserName(repair.assignedToName),
+                                                    onValueChange: (value)=>handleAssignUser(repair.id, value),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectTrigger"], {
                                                             className: "w-48",
                                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {
-                                                                placeholder: "Select technician"
+                                                                placeholder: "Select user"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                lineNumber: 177,
+                                                                lineNumber: 169,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                            lineNumber: 176,
+                                                            lineNumber: 168,
                                                             columnNumber: 29
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -844,29 +840,29 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                                 className: "h-4 w-4 text-muted-foreground"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                                lineNumber: 182,
+                                                                                lineNumber: 174,
                                                                                 columnNumber: 41
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 children: "To Be Determined"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                                lineNumber: 183,
+                                                                                lineNumber: 175,
                                                                                 columnNumber: 41
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                        lineNumber: 181,
+                                                                        lineNumber: 173,
                                                                         columnNumber: 37
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                    lineNumber: 180,
+                                                                    lineNumber: 172,
                                                                     columnNumber: 33
                                                                 }, this),
-                                                                technicians.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                                                        value: t.name,
+                                                                assignableUsers.map((u)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                                        value: u.name,
                                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                             className: "flex items-center gap-2",
                                                                             children: [
@@ -874,42 +870,42 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                                     className: "h-4 w-4 text-muted-foreground"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                                    lineNumber: 189,
+                                                                                    lineNumber: 181,
                                                                                     columnNumber: 45
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                                    children: t.name
+                                                                                    children: u.name
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                                    lineNumber: 190,
+                                                                                    lineNumber: 182,
                                                                                     columnNumber: 45
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                            lineNumber: 188,
+                                                                            lineNumber: 180,
                                                                             columnNumber: 41
                                                                         }, this)
-                                                                    }, t.id, false, {
+                                                                    }, u.id, false, {
                                                                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                        lineNumber: 187,
+                                                                        lineNumber: 179,
                                                                         columnNumber: 37
                                                                     }, this))
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                            lineNumber: 179,
+                                                            lineNumber: 171,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                    lineNumber: 172,
+                                                    lineNumber: 164,
                                                     columnNumber: 25
-                                                }, this) : getTechnicianName(repair.assignedToName)
+                                                }, this) : getAssignedUserName(repair.assignedToName)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                lineNumber: 170,
+                                                lineNumber: 162,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -917,7 +913,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                 children: repair.problemNotes
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                lineNumber: 200,
+                                                lineNumber: 192,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -925,7 +921,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                 children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(repair.createdAt, 'PP')
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                lineNumber: 201,
+                                                lineNumber: 193,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -943,17 +939,17 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: repair.status
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                    lineNumber: 206,
+                                                                    lineNumber: 198,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                lineNumber: 205,
+                                                                lineNumber: 197,
                                                                 columnNumber: 24
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                            lineNumber: 204,
+                                                            lineNumber: 196,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -963,7 +959,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: "Pending"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                    lineNumber: 210,
+                                                                    lineNumber: 202,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -971,7 +967,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: "In Progress"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                    lineNumber: 211,
+                                                                    lineNumber: 203,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -979,7 +975,7 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: "Ready"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                    lineNumber: 212,
+                                                                    lineNumber: 204,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -987,24 +983,24 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: "Archived"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                    lineNumber: 213,
+                                                                    lineNumber: 205,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                            lineNumber: 209,
+                                                            lineNumber: 201,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                    lineNumber: 203,
+                                                    lineNumber: 195,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                lineNumber: 202,
+                                                lineNumber: 194,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1022,17 +1018,17 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                     className: "h-4 w-4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                    lineNumber: 222,
+                                                                    lineNumber: 214,
                                                                     columnNumber: 37
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                lineNumber: 221,
+                                                                lineNumber: 213,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                            lineNumber: 220,
+                                                            lineNumber: 212,
                                                             columnNumber: 29
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -1040,29 +1036,29 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                                                 children: visiblePasswords[repair.id] ? repair.passwordPin : '••••••••'
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                                lineNumber: 226,
+                                                                lineNumber: 218,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                            lineNumber: 225,
+                                                            lineNumber: 217,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                    lineNumber: 219,
+                                                    lineNumber: 211,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                                lineNumber: 217,
+                                                lineNumber: 209,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, repair.id, true, {
                                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                        lineNumber: 164,
+                                        lineNumber: 156,
                                         columnNumber: 15
                                     }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableRow"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1071,39 +1067,39 @@ function RepairsList({ repairs, technicians, onViewDetails }) {
                                         children: "No active repairs."
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                        lineNumber: 234,
+                                        lineNumber: 226,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                    lineNumber: 233,
+                                    lineNumber: 225,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                                lineNumber: 162,
+                                lineNumber: 154,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                        lineNumber: 150,
+                        lineNumber: 142,
                         columnNumber: 9
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                    lineNumber: 149,
+                    lineNumber: 141,
                     columnNumber: 7
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-                lineNumber: 148,
+                lineNumber: 140,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/repairs-list.tsx",
-        lineNumber: 141,
+        lineNumber: 133,
         columnNumber: 5
     }, this);
 }
@@ -1205,6 +1201,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$firebase$2f$firestore$2f$dist$2f$esm$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/node_modules/firebase/firestore/dist/esm/index.esm.js [app-client] (ecmascript) <module evaluation>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm2017$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@firebase/firestore/dist/index.esm2017.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$firebase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/firebase.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/context/UserContext.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 'use client';
@@ -1217,9 +1214,11 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
+;
+function ReadyRepairsList({ repairs, assignableUsers, onViewDetails }) {
     _s();
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"])();
+    const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
     const handleStatusChange = async (repairId, newStatus)=>{
         try {
             const repairRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm2017$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["doc"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$firebase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["db"], 'repairs', repairId);
@@ -1260,14 +1259,10 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                 return '';
         }
     };
-    const getTechnicianName = (techIdentifier)=>{
-        if (!technicians || !techIdentifier) return 'Unassigned';
-        const identifier = techIdentifier.toLowerCase();
-        const technicianByEmail = technicians.find((t)=>t.email.toLowerCase() === identifier);
-        if (technicianByEmail) return technicianByEmail.name;
-        const technicianByName = technicians.find((t)=>t.name.toLowerCase() === identifier);
-        if (technicianByName) return technicianByName.name;
-        return techIdentifier;
+    const getAssignedUserName = (userName)=>{
+        if (!assignableUsers || !userName) return 'Unassigned';
+        const foundUser = assignableUsers.find((u)=>u.name.toLowerCase() === userName.toLowerCase());
+        return foundUser ? foundUser.name : userName;
     };
     const readyRepairs = (repairs || []).filter((r)=>r.status === 'Ready');
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1278,20 +1273,20 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                         children: "Ready for Pickup"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                        lineNumber: 107,
+                        lineNumber: 102,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                         children: "A list of repairs that have been completed and are ready for customer pickup."
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                        lineNumber: 108,
+                        lineNumber: 103,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                lineNumber: 106,
+                lineNumber: 101,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1304,7 +1299,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                         children: "Customer"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                        lineNumber: 116,
+                                        lineNumber: 111,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1312,7 +1307,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                         children: "Device"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                        lineNumber: 117,
+                                        lineNumber: 112,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1320,7 +1315,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                         children: "Serviced By"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                        lineNumber: 118,
+                                        lineNumber: 113,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1328,7 +1323,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                         children: "Created"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                        lineNumber: 119,
+                                        lineNumber: 114,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1336,25 +1331,25 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                         children: "Ready On"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                        lineNumber: 120,
+                                        lineNumber: 115,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
                                         children: "Status"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 116,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                lineNumber: 115,
+                                lineNumber: 110,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                            lineNumber: 114,
+                            lineNumber: 109,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableBody"], {
@@ -1369,7 +1364,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                                     children: repair.customerName
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                    lineNumber: 128,
+                                                    lineNumber: 123,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1381,13 +1376,13 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                    lineNumber: 129,
+                                                    lineNumber: 124,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                            lineNumber: 127,
+                                            lineNumber: 122,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1399,15 +1394,15 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                            lineNumber: 131,
+                                            lineNumber: 126,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
                                             className: "hidden lg:table-cell",
-                                            children: getTechnicianName(repair.assignedToName)
+                                            children: getAssignedUserName(repair.assignedToName)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                            lineNumber: 132,
+                                            lineNumber: 127,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1415,7 +1410,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                             children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(repair.createdAt, 'PP')
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                            lineNumber: 133,
+                                            lineNumber: 128,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1423,7 +1418,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                             children: repair.readyAt ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(repair.readyAt, 'PP') : 'N/A'
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                            lineNumber: 134,
+                                            lineNumber: 129,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1441,17 +1436,17 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                                                 children: repair.status
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                                lineNumber: 139,
+                                                                lineNumber: 134,
                                                                 columnNumber: 25
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                            lineNumber: 138,
+                                                            lineNumber: 133,
                                                             columnNumber: 24
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                        lineNumber: 137,
+                                                        lineNumber: 132,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -1461,7 +1456,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                                                 children: "Pending"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                                lineNumber: 143,
+                                                                lineNumber: 138,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1469,7 +1464,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                                                 children: "In Progress"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                                lineNumber: 144,
+                                                                lineNumber: 139,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1477,7 +1472,7 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                                                 children: "Ready"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                                lineNumber: 145,
+                                                                lineNumber: 140,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1485,30 +1480,30 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                                                 children: "Archived"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                                lineNumber: 146,
+                                                                lineNumber: 141,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                        lineNumber: 142,
+                                                        lineNumber: 137,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                                lineNumber: 136,
+                                                lineNumber: 131,
                                                 columnNumber: 20
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                            lineNumber: 135,
+                                            lineNumber: 130,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, repair.id, true, {
                                     fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                    lineNumber: 126,
+                                    lineNumber: 121,
                                     columnNumber: 15
                                 }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableRow"], {
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1517,40 +1512,41 @@ function ReadyRepairsList({ repairs, technicians, onViewDetails }) {
                                     children: "No repairs are ready for pickup."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                    lineNumber: 153,
+                                    lineNumber: 148,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                                lineNumber: 152,
+                                lineNumber: 147,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                            lineNumber: 124,
+                            lineNumber: 119,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                    lineNumber: 113,
+                    lineNumber: 108,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-                lineNumber: 112,
+                lineNumber: 107,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/ready-repairs-list.tsx",
-        lineNumber: 105,
+        lineNumber: 100,
         columnNumber: 5
     }, this);
 }
-_s(ReadyRepairsList, "XbQoRqPDPo6PJEzRId7w4FMisDk=", false, function() {
+_s(ReadyRepairsList, "gI71R6YpfEs4DS703LQSj47w7ZM=", false, function() {
     return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"]
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"]
     ];
 });
 _c = ReadyRepairsList;
@@ -1602,7 +1598,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
+function InProgressRepairsList({ repairs, assignableUsers, onViewDetails }) {
     _s();
     const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"])();
@@ -1641,14 +1637,14 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                 assignedToName: techName
             });
             toast({
-                title: "Technician Assigned",
+                title: "User Assigned",
                 description: `Repair assigned to ${techName}.`
             });
         } catch (error) {
-            console.error("Error assigning technician: ", error);
+            console.error("Error assigning user: ", error);
             toast({
                 title: 'Error',
-                description: 'Could not assign technician.',
+                description: 'Could not assign user.',
                 variant: 'destructive'
             });
         }
@@ -1673,14 +1669,10 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                 return '';
         }
     };
-    const getTechnicianName = (techIdentifier)=>{
-        if (!technicians || !techIdentifier || techIdentifier === 'To Be Determined') return 'To Be Determined';
-        const identifier = techIdentifier.toLowerCase();
-        const technicianByEmail = technicians.find((t)=>t.email.toLowerCase() === identifier);
-        if (technicianByEmail) return technicianByEmail.name;
-        const technicianByName = technicians.find((t)=>t.name.toLowerCase() === identifier);
-        if (technicianByName) return technicianByName.name;
-        return techIdentifier;
+    const getAssignedUserName = (userName)=>{
+        if (!assignableUsers || !userName || userName === 'To Be Determined') return 'To Be Determined';
+        const foundUser = assignableUsers.find((u)=>u.name.toLowerCase() === userName.toLowerCase());
+        return foundUser ? foundUser.name : userName;
     };
     const inProgressRepairs = (repairs || []).filter((r)=>r.status === 'In Progress');
     const isAdmin = user?.role === 'Admin';
@@ -1692,20 +1684,20 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                         children: "In Progress Repairs"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                        lineNumber: 143,
+                        lineNumber: 135,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                         children: "A list of all repairs currently being serviced."
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                        lineNumber: 144,
+                        lineNumber: 136,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                lineNumber: 142,
+                lineNumber: 134,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1719,7 +1711,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Customer"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                            lineNumber: 153,
+                                            lineNumber: 145,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1727,7 +1719,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Device"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                            lineNumber: 154,
+                                            lineNumber: 146,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1735,7 +1727,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Serviced By"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                            lineNumber: 155,
+                                            lineNumber: 147,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1743,7 +1735,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Issue"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                            lineNumber: 156,
+                                            lineNumber: 148,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1751,14 +1743,14 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Created"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                            lineNumber: 157,
+                                            lineNumber: 149,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
                                             children: "Status"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                            lineNumber: 158,
+                                            lineNumber: 150,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1766,18 +1758,18 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                             children: "Actions"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                            lineNumber: 159,
+                                            lineNumber: 151,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                    lineNumber: 152,
+                                    lineNumber: 144,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                lineNumber: 151,
+                                lineNumber: 143,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableBody"], {
@@ -1792,7 +1784,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                         children: repair.customerName
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                        lineNumber: 166,
+                                                        lineNumber: 158,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1804,13 +1796,13 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                        lineNumber: 167,
+                                                        lineNumber: 159,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                lineNumber: 165,
+                                                lineNumber: 157,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1822,28 +1814,28 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                lineNumber: 169,
+                                                lineNumber: 161,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
                                                 className: "hidden lg:table-cell",
                                                 onClick: (e)=>e.stopPropagation(),
                                                 children: isAdmin ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
-                                                    value: getTechnicianName(repair.assignedToName),
+                                                    value: getAssignedUserName(repair.assignedToName),
                                                     onValueChange: (value)=>handleAssignTech(repair.id, value),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectTrigger"], {
                                                             className: "w-48",
                                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {
-                                                                placeholder: "Select technician"
+                                                                placeholder: "Select user"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                lineNumber: 177,
+                                                                lineNumber: 169,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                            lineNumber: 176,
+                                                            lineNumber: 168,
                                                             columnNumber: 29
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -1857,29 +1849,29 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                                 className: "h-4 w-4 text-muted-foreground"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                                lineNumber: 182,
+                                                                                lineNumber: 174,
                                                                                 columnNumber: 41
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 children: "To Be Determined"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                                lineNumber: 183,
+                                                                                lineNumber: 175,
                                                                                 columnNumber: 41
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                        lineNumber: 181,
+                                                                        lineNumber: 173,
                                                                         columnNumber: 37
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                    lineNumber: 180,
+                                                                    lineNumber: 172,
                                                                     columnNumber: 33
                                                                 }, this),
-                                                                technicians.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                                                        value: t.name,
+                                                                assignableUsers.map((u)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                                        value: u.name,
                                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                             className: "flex items-center gap-2",
                                                                             children: [
@@ -1887,42 +1879,42 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                                     className: "h-4 w-4 text-muted-foreground"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                                    lineNumber: 189,
+                                                                                    lineNumber: 181,
                                                                                     columnNumber: 45
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                                    children: t.name
+                                                                                    children: u.name
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                                    lineNumber: 190,
+                                                                                    lineNumber: 182,
                                                                                     columnNumber: 45
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                            lineNumber: 188,
+                                                                            lineNumber: 180,
                                                                             columnNumber: 41
                                                                         }, this)
-                                                                    }, t.id, false, {
+                                                                    }, u.id, false, {
                                                                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                        lineNumber: 187,
+                                                                        lineNumber: 179,
                                                                         columnNumber: 37
                                                                     }, this))
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                            lineNumber: 179,
+                                                            lineNumber: 171,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                    lineNumber: 172,
+                                                    lineNumber: 164,
                                                     columnNumber: 25
-                                                }, this) : getTechnicianName(repair.assignedToName)
+                                                }, this) : getAssignedUserName(repair.assignedToName)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                lineNumber: 170,
+                                                lineNumber: 162,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1930,7 +1922,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                 children: repair.problemNotes
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                lineNumber: 200,
+                                                lineNumber: 192,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1938,7 +1930,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                 children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(repair.createdAt, 'PP')
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                lineNumber: 201,
+                                                lineNumber: 193,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1956,17 +1948,17 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: repair.status
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                    lineNumber: 206,
+                                                                    lineNumber: 198,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                lineNumber: 205,
+                                                                lineNumber: 197,
                                                                 columnNumber: 24
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                            lineNumber: 204,
+                                                            lineNumber: 196,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -1976,7 +1968,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: "Pending"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                    lineNumber: 210,
+                                                                    lineNumber: 202,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1984,7 +1976,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: "In Progress"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                    lineNumber: 211,
+                                                                    lineNumber: 203,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1992,7 +1984,7 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: "Ready"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                    lineNumber: 212,
+                                                                    lineNumber: 204,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2000,24 +1992,24 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                     children: "Archived"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                    lineNumber: 213,
+                                                                    lineNumber: 205,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                            lineNumber: 209,
+                                                            lineNumber: 201,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                    lineNumber: 203,
+                                                    lineNumber: 195,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                lineNumber: 202,
+                                                lineNumber: 194,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2035,17 +2027,17 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                     className: "h-4 w-4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                    lineNumber: 222,
+                                                                    lineNumber: 214,
                                                                     columnNumber: 37
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                lineNumber: 221,
+                                                                lineNumber: 213,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                            lineNumber: 220,
+                                                            lineNumber: 212,
                                                             columnNumber: 29
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -2053,29 +2045,29 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                                                 children: visiblePasswords[repair.id] ? repair.passwordPin : '••••••••'
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                                lineNumber: 226,
+                                                                lineNumber: 218,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                            lineNumber: 225,
+                                                            lineNumber: 217,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                    lineNumber: 219,
+                                                    lineNumber: 211,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                                lineNumber: 217,
+                                                lineNumber: 209,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, repair.id, true, {
                                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                        lineNumber: 164,
+                                        lineNumber: 156,
                                         columnNumber: 15
                                     }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableRow"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2084,39 +2076,39 @@ function InProgressRepairsList({ repairs, technicians, onViewDetails }) {
                                         children: "No repairs in progress."
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                        lineNumber: 234,
+                                        lineNumber: 226,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                    lineNumber: 233,
+                                    lineNumber: 225,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                                lineNumber: 162,
+                                lineNumber: 154,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                        lineNumber: 150,
+                        lineNumber: 142,
                         columnNumber: 9
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                    lineNumber: 149,
+                    lineNumber: 141,
                     columnNumber: 7
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-                lineNumber: 148,
+                lineNumber: 140,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/in-progress-repairs-list.tsx",
-        lineNumber: 141,
+        lineNumber: 133,
         columnNumber: 5
     }, this);
 }
@@ -2159,12 +2151,12 @@ var _s = __turbopack_context__.k.signature();
 ;
 function DashboardPage() {
     _s();
-    const { user, technicians, repairs } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
+    const { user, assignableUsers, repairs } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const handleViewDetails = (repair)=>{
         router.push(`/dashboard/repairs/${repair.id}`);
     };
-    const repairsForUser = user?.role === 'Admin' ? repairs : repairs.filter((r)=>r.assignedToName.toLowerCase() === user?.email.toLowerCase() || technicians.find((t)=>t.email.toLowerCase() === user?.email.toLowerCase())?.name.toLowerCase() === r.assignedToName.toLowerCase());
+    const repairsForUser = user?.role === 'Admin' ? repairs : repairs.filter((r)=>r.assignedToName.toLowerCase() === user?.name.toLowerCase());
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "p-4 sm:p-6 lg:p-8 space-y-8",
@@ -2209,7 +2201,7 @@ function DashboardPage() {
                             value: "active",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dashboard$2f$repairs$2d$list$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["RepairsList"], {
                                 repairs: repairsForUser,
-                                technicians: technicians,
+                                assignableUsers: assignableUsers,
                                 onViewDetails: handleViewDetails
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/page.tsx",
@@ -2225,7 +2217,7 @@ function DashboardPage() {
                             value: "in-progress",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dashboard$2f$in$2d$progress$2d$repairs$2d$list$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["InProgressRepairsList"], {
                                 repairs: repairsForUser,
-                                technicians: technicians,
+                                assignableUsers: assignableUsers,
                                 onViewDetails: handleViewDetails
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/page.tsx",
@@ -2241,7 +2233,7 @@ function DashboardPage() {
                             value: "ready",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dashboard$2f$ready$2d$repairs$2d$list$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ReadyRepairsList"], {
                                 repairs: repairsForUser,
-                                technicians: technicians,
+                                assignableUsers: assignableUsers,
                                 onViewDetails: handleViewDetails
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/page.tsx",
@@ -2271,7 +2263,7 @@ function DashboardPage() {
         }, this)
     }, void 0, false);
 }
-_s(DashboardPage, "nt9b/4nnFaGCc+wX962DzVOGqCE=", false, function() {
+_s(DashboardPage, "R0S2xcMU/8X7VcQ2W7/KGsl8JhA=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]

@@ -1634,7 +1634,7 @@ const initialAccessoryOptions = [
         label: 'Headphones'
     }
 ];
-function RepairCard({ onCreateRepair, technicians, customers, existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes }) {
+function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes }) {
     _s();
     const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
     const isMobile = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$mobile$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useIsMobile"])();
@@ -1703,8 +1703,8 @@ function RepairCard({ onCreateRepair, technicians, customers, existingRepair, pr
         if (user?.role === 'Admin') {
             setAssignedTo('To Be Determined');
         } else if (user?.role === 'Student') {
-            const studentTech = technicians.find((t)=>t.email === user.email);
-            setAssignedTo(studentTech?.name ?? '');
+            const studentUser = assignableUsers.find((u)=>u.name === user.name);
+            setAssignedTo(studentUser?.name ?? '');
         } else {
             setAssignedTo('');
         }
@@ -1719,14 +1719,14 @@ function RepairCard({ onCreateRepair, technicians, customers, existingRepair, pr
                     setAssignedTo('To Be Determined');
                 }
             } else if (user?.role === 'Student') {
-                const studentTech = technicians.find({
-                    "RepairCard.useEffect.studentTech": (t)=>t.email === user.email
-                }["RepairCard.useEffect.studentTech"]);
-                setAssignedTo(studentTech?.name ?? '');
+                const studentUser = assignableUsers.find({
+                    "RepairCard.useEffect.studentUser": (u)=>u.name === user.name
+                }["RepairCard.useEffect.studentUser"]);
+                setAssignedTo(studentUser?.name ?? '');
             }
         }
     }["RepairCard.useEffect"], [
-        technicians,
+        assignableUsers,
         user,
         assignedTo,
         isEditMode
@@ -1838,7 +1838,7 @@ function RepairCard({ onCreateRepair, technicians, customers, existingRepair, pr
         }
     };
     const isAdmin = user?.role === 'Admin';
-    const loggedInTechnician = technicians.find((t)=>t.email === user?.email);
+    const loggedInUser = assignableUsers.find((u)=>u.name === user?.name);
     const customerOptions = (customers || []).map((c)=>({
             value: c.id,
             label: `${c.fullName} (${c.email})`
@@ -2250,7 +2250,7 @@ function RepairCard({ onCreateRepair, technicians, customers, existingRepair, pr
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectTrigger"], {
                                                 id: "assignedTo",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {
-                                                    placeholder: "Select technician"
+                                                    placeholder: "Select user"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
                                                     lineNumber: 394,
@@ -2294,8 +2294,8 @@ function RepairCard({ onCreateRepair, technicians, customers, existingRepair, pr
                                                             lineNumber: 399,
                                                             columnNumber: 29
                                                         }, this),
-                                                        technicians.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                                                value: t.name,
+                                                        assignableUsers.map((u)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                                value: u.name,
                                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "flex items-center gap-2",
                                                                     children: [
@@ -2307,7 +2307,7 @@ function RepairCard({ onCreateRepair, technicians, customers, existingRepair, pr
                                                                             columnNumber: 41
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                            children: t.name
+                                                                            children: u.name
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
                                                                             lineNumber: 409,
@@ -2319,14 +2319,14 @@ function RepairCard({ onCreateRepair, technicians, customers, existingRepair, pr
                                                                     lineNumber: 407,
                                                                     columnNumber: 37
                                                                 }, this)
-                                                            }, t.id, false, {
+                                                            }, u.id, false, {
                                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
                                                                 lineNumber: 406,
                                                                 columnNumber: 33
                                                             }, this))
                                                     ]
-                                                }, void 0, true) : loggedInTechnician && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                                    value: loggedInTechnician.name,
+                                                }, void 0, true) : loggedInUser && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                    value: loggedInUser.name,
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "flex items-center gap-2",
                                                         children: [
@@ -2338,7 +2338,7 @@ function RepairCard({ onCreateRepair, technicians, customers, existingRepair, pr
                                                                 columnNumber: 37
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                children: loggedInTechnician.name
+                                                                children: loggedInUser.name
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
                                                                 lineNumber: 419,
@@ -2741,7 +2741,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 function EditRepairPage() {
     _s();
-    const { user, technicians, customers } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
+    const { user, assignableUsers, customers } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const params = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"])();
@@ -2890,7 +2890,7 @@ function EditRepairPage() {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "p-4 sm:p-6 lg:p-8",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dashboard$2f$repair$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["RepairCard"], {
-            technicians: technicians,
+            assignableUsers: assignableUsers,
             customers: customers,
             existingRepair: repair,
             onCreateRepair: handleUpdateRepair
@@ -2905,7 +2905,7 @@ function EditRepairPage() {
         columnNumber: 9
     }, this);
 }
-_s(EditRepairPage, "wPCvOJSlbl32kKreCa82A+EUAvE=", false, function() {
+_s(EditRepairPage, "XcZ25lDEmpyXRakWpyMqVnmdHTg=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"],
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"],

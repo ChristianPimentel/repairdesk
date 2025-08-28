@@ -345,16 +345,12 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$b
 ;
 ;
 function ArchivePage() {
-    const { user, technicians, repairs, donations } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useUser"])();
+    const { user, assignableUsers, repairs, donations } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$UserContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useUser"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
-    const getTechnicianName = (techIdentifier)=>{
-        if (!technicians || !techIdentifier) return 'Unassigned';
-        const identifier = techIdentifier.toLowerCase();
-        const technicianByEmail = technicians.find((t)=>t.email.toLowerCase() === identifier);
-        if (technicianByEmail) return technicianByEmail.name;
-        const technicianByName = technicians.find((t)=>t.name.toLowerCase() === identifier);
-        if (technicianByName) return technicianByName.name;
-        return techIdentifier;
+    const getAssignedUserName = (userName)=>{
+        if (!assignableUsers || !userName) return 'Unassigned';
+        const foundUser = assignableUsers.find((u)=>u.name.toLowerCase() === userName.toLowerCase());
+        return foundUser ? foundUser.name : userName;
     };
     const archivedRepairs = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
         return (repairs || []).filter((r)=>r.status === 'Archived');
@@ -362,9 +358,9 @@ function ArchivePage() {
         repairs
     ]);
     const groupedRepairs = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
-        const repairsToGroup = user?.role === 'Admin' ? archivedRepairs : archivedRepairs.filter((r)=>getTechnicianName(r.assignedToName).toLowerCase() === technicians.find((t)=>t.email.toLowerCase() === user?.email.toLowerCase())?.name.toLowerCase());
+        const repairsToGroup = user?.role === 'Admin' ? archivedRepairs : archivedRepairs.filter((r)=>getAssignedUserName(r.assignedToName).toLowerCase() === user?.name.toLowerCase());
         return repairsToGroup.reduce((acc, repair)=>{
-            const techName = getTechnicianName(repair.assignedToName);
+            const techName = getAssignedUserName(repair.assignedToName);
             if (!acc[techName]) {
                 acc[techName] = [];
             }
@@ -374,7 +370,7 @@ function ArchivePage() {
     }, [
         archivedRepairs,
         user,
-        technicians
+        assignableUsers
     ]);
     const handleViewDetails = (repair)=>{
         router.push(`/dashboard/repairs/${repair.id}`);
@@ -392,7 +388,7 @@ function ArchivePage() {
     const isDonated = (repair)=>{
         return donations.some((d)=>d.customerId === repair.customerId && d.deviceType === repair.deviceType && d.brand === repair.brand && d.model === repair.model);
     };
-    const sortedTechnicianNames = Object.keys(groupedRepairs).sort();
+    const sortedUserNames = Object.keys(groupedRepairs).sort();
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "p-4 sm:p-6 lg:p-8",
@@ -404,40 +400,40 @@ function ArchivePage() {
                                 children: "Archived Repairs"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                lineNumber: 102,
+                                lineNumber: 95,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
-                                children: "A list of all completed and archived repair jobs, organized by technician."
+                                children: "A list of all completed and archived repair jobs, organized by assigned user."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                lineNumber: 103,
+                                lineNumber: 96,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                        lineNumber: 101,
+                        lineNumber: 94,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
-                        children: sortedTechnicianNames.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$accordion$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Accordion"], {
+                        children: sortedUserNames.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$accordion$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Accordion"], {
                             type: "single",
                             collapsible: true,
                             className: "w-full",
-                            children: sortedTechnicianNames.map((techName)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$accordion$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccordionItem"], {
-                                    value: techName,
+                            children: sortedUserNames.map((userName)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$accordion$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccordionItem"], {
+                                    value: userName,
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$accordion$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccordionTrigger"], {
                                             children: [
-                                                techName,
+                                                userName,
                                                 " (",
-                                                groupedRepairs[techName].length,
+                                                groupedRepairs[userName].length,
                                                 " repairs)"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                            lineNumber: 112,
+                                            lineNumber: 105,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$accordion$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccordionContent"], {
@@ -450,14 +446,14 @@ function ArchivePage() {
                                                                     children: "Customer"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                    lineNumber: 119,
+                                                                    lineNumber: 112,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
                                                                     children: "Device"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                    lineNumber: 120,
+                                                                    lineNumber: 113,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -465,7 +461,7 @@ function ArchivePage() {
                                                                     children: "Created"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                    lineNumber: 121,
+                                                                    lineNumber: 114,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -473,7 +469,7 @@ function ArchivePage() {
                                                                     children: "Archived"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                    lineNumber: 122,
+                                                                    lineNumber: 115,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 user?.role === 'Admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -481,22 +477,22 @@ function ArchivePage() {
                                                                     children: "Actions"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                    lineNumber: 123,
+                                                                    lineNumber: 116,
                                                                     columnNumber: 72
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                            lineNumber: 118,
+                                                            lineNumber: 111,
                                                             columnNumber: 41
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                        lineNumber: 117,
+                                                        lineNumber: 110,
                                                         columnNumber: 37
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableBody"], {
-                                                        children: groupedRepairs[techName].map((repair)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableRow"], {
+                                                        children: groupedRepairs[userName].map((repair)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableRow"], {
                                                                 onClick: ()=>handleViewDetails(repair),
                                                                 className: "cursor-pointer",
                                                                 children: [
@@ -504,7 +500,7 @@ function ArchivePage() {
                                                                         children: repair.customerName
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                        lineNumber: 129,
+                                                                        lineNumber: 122,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -515,7 +511,7 @@ function ArchivePage() {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                        lineNumber: 130,
+                                                                        lineNumber: 123,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -523,7 +519,7 @@ function ArchivePage() {
                                                                         children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(repair.createdAt, 'PP')
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                        lineNumber: 131,
+                                                                        lineNumber: 124,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -531,7 +527,7 @@ function ArchivePage() {
                                                                         children: repair.archivedAt ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(repair.archivedAt, 'PP') : 'N/A'
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                        lineNumber: 132,
+                                                                        lineNumber: 125,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     user?.role === 'Admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -541,7 +537,7 @@ function ArchivePage() {
                                                                             children: "Donated"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                            lineNumber: 136,
+                                                                            lineNumber: 129,
                                                                             columnNumber: 61
                                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                                                             variant: "outline",
@@ -552,52 +548,52 @@ function ArchivePage() {
                                                                                     className: "mr-2 h-4 w-4"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                                    lineNumber: 139,
+                                                                                    lineNumber: 132,
                                                                                     columnNumber: 65
                                                                                 }, this),
                                                                                 "Donate"
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                            lineNumber: 138,
+                                                                            lineNumber: 131,
                                                                             columnNumber: 61
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                        lineNumber: 134,
+                                                                        lineNumber: 127,
                                                                         columnNumber: 53
                                                                     }, this)
                                                                 ]
                                                             }, repair.id, true, {
                                                                 fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                                lineNumber: 128,
+                                                                lineNumber: 121,
                                                                 columnNumber: 45
                                                             }, this))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                        lineNumber: 126,
+                                                        lineNumber: 119,
                                                         columnNumber: 37
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                                lineNumber: 116,
+                                                lineNumber: 109,
                                                 columnNumber: 33
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                            lineNumber: 115,
+                                            lineNumber: 108,
                                             columnNumber: 29
                                         }, this)
                                     ]
-                                }, techName, true, {
+                                }, userName, true, {
                                     fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                    lineNumber: 111,
+                                    lineNumber: 104,
                                     columnNumber: 25
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                            lineNumber: 109,
+                            lineNumber: 102,
                             columnNumber: 17
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "text-center py-10 text-muted-foreground",
@@ -605,28 +601,28 @@ function ArchivePage() {
                                 children: "No archived repairs found."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                                lineNumber: 155,
+                                lineNumber: 148,
                                 columnNumber: 21
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                            lineNumber: 154,
+                            lineNumber: 147,
                             columnNumber: 17
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                        lineNumber: 107,
+                        lineNumber: 100,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/dashboard/archive/page.tsx",
-                lineNumber: 100,
+                lineNumber: 93,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/dashboard/archive/page.tsx",
-            lineNumber: 99,
+            lineNumber: 92,
             columnNumber: 7
         }, this)
     }, void 0, false);
