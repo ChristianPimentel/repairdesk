@@ -32,21 +32,14 @@ import { Gift } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 export default function ArchivePage() {
-  const { user, technicians, repairs, donations } = useUser();
+  const { user, assignableUsers, repairs, donations } = useUser();
   const router = useRouter();
 
-  const getTechnicianName = (techIdentifier: string): string => {
-    if (!technicians || !techIdentifier) return 'Unassigned';
+  const getAssignedUserName = (userName: string): string => {
+    if (!assignableUsers || !userName) return 'Unassigned';
     
-    const identifier = techIdentifier.toLowerCase();
-    
-    const technicianByEmail = technicians.find(t => t.email.toLowerCase() === identifier);
-    if (technicianByEmail) return technicianByEmail.name;
-
-    const technicianByName = technicians.find(t => t.name.toLowerCase() === identifier);
-    if (technicianByName) return technicianByName.name;
-
-    return techIdentifier;
+    const foundUser = assignableUsers.find(u => u.name.toLowerCase() === userName.toLowerCase());
+    return foundUser ? foundUser.name : userName;
   };
 
   const archivedRepairs = useMemo(() => {
@@ -56,17 +49,17 @@ export default function ArchivePage() {
   const groupedRepairs = useMemo(() => {
     const repairsToGroup = user?.role === 'Admin' 
       ? archivedRepairs 
-      : archivedRepairs.filter(r => getTechnicianName(r.assignedToName).toLowerCase() === technicians.find(t => t.email.toLowerCase() === user?.email.toLowerCase())?.name.toLowerCase());
+      : archivedRepairs.filter(r => getAssignedUserName(r.assignedToName).toLowerCase() === user?.name.toLowerCase());
       
     return repairsToGroup.reduce((acc, repair) => {
-        const techName = getTechnicianName(repair.assignedToName);
+        const techName = getAssignedUserName(repair.assignedToName);
         if (!acc[techName]) {
           acc[techName] = [];
         }
         acc[techName].push(repair);
         return acc;
       }, {} as Record<string, Repair[]>);
-  }, [archivedRepairs, user, technicians]);
+  }, [archivedRepairs, user, assignableUsers]);
   
   const handleViewDetails = (repair: Repair) => {
     router.push(`/dashboard/repairs/${repair.id}`);
@@ -92,7 +85,7 @@ export default function ArchivePage() {
     );
   }
 
-  const sortedTechnicianNames = Object.keys(groupedRepairs).sort();
+  const sortedUserNames = Object.keys(groupedRepairs).sort();
 
   return (
     <>
@@ -101,16 +94,16 @@ export default function ArchivePage() {
           <CardHeader>
             <CardTitle>Archived Repairs</CardTitle>
             <CardDescription>
-              A list of all completed and archived repair jobs, organized by technician.
+              A list of all completed and archived repair jobs, organized by assigned user.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {sortedTechnicianNames.length > 0 ? (
+            {sortedUserNames.length > 0 ? (
                 <Accordion type="single" collapsible className="w-full">
-                    {sortedTechnicianNames.map((techName) => (
-                        <AccordionItem value={techName} key={techName}>
+                    {sortedUserNames.map((userName) => (
+                        <AccordionItem value={userName} key={userName}>
                             <AccordionTrigger>
-                                {techName} ({groupedRepairs[techName].length} repairs)
+                                {userName} ({groupedRepairs[userName].length} repairs)
                             </AccordionTrigger>
                             <AccordionContent>
                                 <Table>
@@ -124,7 +117,7 @@ export default function ArchivePage() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {groupedRepairs[techName].map((repair) => (
+                                        {groupedRepairs[userName].map((repair) => (
                                             <TableRow key={repair.id} onClick={() => handleViewDetails(repair)} className="cursor-pointer">
                                                 <TableCell>{repair.customerName}</TableCell>
                                                 <TableCell>{repair.brand} {repair.model}</TableCell>

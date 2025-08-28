@@ -571,14 +571,38 @@ const UserProvider = ({ children })=>{
             })["UserProvider.useEffect"];
         }
     }["UserProvider.useEffect"], []);
+    const assignableUsers = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "UserProvider.useMemo[assignableUsers]": ()=>{
+            const combined = [
+                ...admins.map({
+                    "UserProvider.useMemo[assignableUsers]": (a)=>({
+                            id: a.id,
+                            name: a.name
+                        })
+                }["UserProvider.useMemo[assignableUsers]"]),
+                ...technicians.map({
+                    "UserProvider.useMemo[assignableUsers]": (t)=>({
+                            id: t.id,
+                            name: t.name
+                        })
+                }["UserProvider.useMemo[assignableUsers]"])
+            ];
+            return combined.sort({
+                "UserProvider.useMemo[assignableUsers]": (a, b)=>a.name.localeCompare(b.name)
+            }["UserProvider.useMemo[assignableUsers]"]);
+        }
+    }["UserProvider.useMemo[assignableUsers]"], [
+        admins,
+        technicians
+    ]);
     const login = (userData)=>{
         setUser(userData);
         sessionStorage.setItem('user', JSON.stringify(userData));
     };
     const logout = ()=>{
-        setUser(null);
         sessionStorage.removeItem('user');
         sessionStorage.removeItem('tempUser');
+        setUser(null);
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(UserContext.Provider, {
         value: {
@@ -591,16 +615,17 @@ const UserProvider = ({ children })=>{
             setRepairs,
             customers,
             donations,
-            admins
+            admins,
+            assignableUsers
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/UserContext.tsx",
-        lineNumber: 125,
+        lineNumber: 134,
         columnNumber: 5
     }, this);
 };
-_s(UserProvider, "Z6+6sV7W9gULFzTnyGxMIKyB1yc=");
+_s(UserProvider, "kos8eo+PvSIFs7mTn1r4Z6WScT4=");
 _c = UserProvider;
 const useUser = ()=>{
     _s1();

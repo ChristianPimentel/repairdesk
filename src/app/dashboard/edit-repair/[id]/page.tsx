@@ -12,7 +12,7 @@ import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function EditRepairPage() {
-    const { user, technicians, customers } = useUser();
+    const { user, assignableUsers, customers } = useUser();
     const { toast } = useToast();
     const router = useRouter();
     const params = useParams();
@@ -109,7 +109,7 @@ export default function EditRepairPage() {
     return (
         <div className="p-4 sm:p-6 lg:p-8">
             <RepairCard
-                technicians={technicians}
+                assignableUsers={assignableUsers}
                 customers={customers}
                 existingRepair={repair}
                 onCreateRepair={handleUpdateRepair} // We reuse the same prop for simplicity

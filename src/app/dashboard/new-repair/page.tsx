@@ -42,7 +42,7 @@ const WhatsAppIcon = () => (
   );
 
 function NewRepairContent() {
-    const { technicians, customers } = useUser();
+    const { assignableUsers, customers } = useUser();
     const { toast } = useToast();
     const searchParams = useSearchParams();
     
@@ -130,7 +130,7 @@ function NewRepairContent() {
     
     const handleShare = async (method: 'whatsapp' | 'sms' | 'native') => {
         const shareText = `Track the status of your repair (ID: ${newRepairId.slice(-6).toUpperCase()}) here: ${repairStatusUrl}`;
-        const phoneNumber = customerPhone.replace(/\D/g, '');
+        const phoneNumber = customerPhone.replace(/\\D/g, '');
 
         if (method === 'whatsapp') {
             if (phoneNumber) {
@@ -170,7 +170,7 @@ function NewRepairContent() {
             <div className="p-4 sm:p-6 lg:p-8">
                 <RepairCard
                     onCreateRepair={handleCreateRepair}
-                    technicians={technicians}
+                    assignableUsers={assignableUsers}
                     customers={customers}
                     preselectedCustomerId={customerId}
                     preselectedDeviceType={deviceType}

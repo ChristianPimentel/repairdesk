@@ -11,7 +11,7 @@ import { ReadyRepairsList } from '@/components/dashboard/ready-repairs-list';
 import { InProgressRepairsList } from '@/components/dashboard/in-progress-repairs-list';
 
 export default function DashboardPage() {
-  const { user, technicians, repairs } = useUser();
+  const { user, assignableUsers, repairs } = useUser();
   const router = useRouter();
   
   const handleViewDetails = (repair: Repair) => {
@@ -20,7 +20,7 @@ export default function DashboardPage() {
 
   const repairsForUser = user?.role === 'Admin' 
     ? repairs 
-    : repairs.filter(r => r.assignedToName.toLowerCase() === user?.email.toLowerCase() || technicians.find(t => t.email.toLowerCase() === user?.email.toLowerCase())?.name.toLowerCase() === r.assignedToName.toLowerCase());
+    : repairs.filter(r => r.assignedToName.toLowerCase() === user?.name.toLowerCase());
 
   
   return (
@@ -34,13 +34,13 @@ export default function DashboardPage() {
               <TabsTrigger value="ready">Ready</TabsTrigger>
             </TabsList>
             <TabsContent value="active">
-              <RepairsList repairs={repairsForUser} technicians={technicians} onViewDetails={handleViewDetails} />
+              <RepairsList repairs={repairsForUser} assignableUsers={assignableUsers} onViewDetails={handleViewDetails} />
             </TabsContent>
             <TabsContent value="in-progress">
-              <InProgressRepairsList repairs={repairsForUser} technicians={technicians} onViewDetails={handleViewDetails} />
+              <InProgressRepairsList repairs={repairsForUser} assignableUsers={assignableUsers} onViewDetails={handleViewDetails} />
             </TabsContent>
             <TabsContent value="ready">
-              <ReadyRepairsList repairs={repairsForUser} technicians={technicians} onViewDetails={handleViewDetails} />
+              <ReadyRepairsList repairs={repairsForUser} assignableUsers={assignableUsers} onViewDetails={handleViewDetails} />
             </TabsContent>
           </Tabs>
         </div>

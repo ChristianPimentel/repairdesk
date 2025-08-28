@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
 import type { User, Technician, Repair, Customer, Donation, Admin } from '@/lib/types';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
@@ -17,6 +17,7 @@ interface UserContextType {
   customers: Customer[];
   donations: Donation[];
   admins: Admin[];
+  assignableUsers: { id: string; name: string }[];
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -109,6 +110,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     };
 
   }, []);
+  
+  const assignableUsers = useMemo(() => {
+    const combined = [
+        ...admins.map(a => ({ id: a.id, name: a.name })),
+        ...technicians.map(t => ({ id: t.id, name: t.name }))
+    ];
+    return combined.sort((a, b) => a.name.localeCompare(b.name));
+  }, [admins, technicians]);
 
   const login = (userData: User) => {
     setUser(userData);
@@ -122,7 +131,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, loading, login, logout, technicians, repairs, setRepairs, customers, donations, admins }}>
+    <UserContext.Provider value={{ user, loading, login, logout, technicians, repairs, setRepairs, customers, donations, admins, assignableUsers }}>
       {children}
     </UserContext.Provider>
   );

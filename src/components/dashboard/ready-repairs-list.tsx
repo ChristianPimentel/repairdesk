@@ -18,7 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import type { Repair, RepairStatus, Technician } from '@/lib/types';
+import type { Repair, RepairStatus } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import {
@@ -31,15 +31,17 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useUser } from '@/context/UserContext';
 
 interface ReadyRepairsListProps {
   repairs: Repair[];
-  technicians: Technician[];
+  assignableUsers: { id: string; name: string }[];
   onViewDetails: (repair: Repair) => void;
 }
 
-export function ReadyRepairsList({ repairs, technicians, onViewDetails }: ReadyRepairsListProps) {
+export function ReadyRepairsList({ repairs, assignableUsers, onViewDetails }: ReadyRepairsListProps) {
   const { toast } = useToast();
+  const { user } = useUser();
 
   const handleStatusChange = async (repairId: string, newStatus: RepairStatus) => {
     try {
@@ -85,18 +87,11 @@ export function ReadyRepairsList({ repairs, technicians, onViewDetails }: ReadyR
     }
   };
 
-  const getTechnicianName = (techIdentifier: string): string => {
-    if (!technicians || !techIdentifier) return 'Unassigned';
+  const getAssignedUserName = (userName: string): string => {
+    if (!assignableUsers || !userName) return 'Unassigned';
     
-    const identifier = techIdentifier.toLowerCase();
-    
-    const technicianByEmail = technicians.find(t => t.email.toLowerCase() === identifier);
-    if (technicianByEmail) return technicianByEmail.name;
-
-    const technicianByName = technicians.find(t => t.name.toLowerCase() === identifier);
-    if (technicianByName) return technicianByName.name;
-
-    return techIdentifier;
+    const foundUser = assignableUsers.find(u => u.name.toLowerCase() === userName.toLowerCase());
+    return foundUser ? foundUser.name : userName;
   };
 
   const readyRepairs = (repairs || []).filter(r => r.status === 'Ready');
@@ -129,7 +124,7 @@ export function ReadyRepairsList({ repairs, technicians, onViewDetails }: ReadyR
                     <div className="text-sm text-muted-foreground md:hidden">{repair.brand} {repair.model}</div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">{repair.brand} {repair.model}</TableCell>
-                <TableCell className="hidden lg:table-cell">{getTechnicianName(repair.assignedToName)}</TableCell>
+                <TableCell className="hidden lg:table-cell">{getAssignedUserName(repair.assignedToName)}</TableCell>
                 <TableCell className="hidden sm:table-cell">{format(repair.createdAt, 'PP')}</TableCell>
                 <TableCell className="hidden md:table-cell">{repair.readyAt ? format(repair.readyAt, 'PP') : 'N/A'}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>

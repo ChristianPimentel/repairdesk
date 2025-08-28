@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import SignaturePad, { SignaturePadRef } from '@/components/signature-pad';
-import type { Customer, Repair, Technician } from '@/lib/types';
+import type { Customer, Repair } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import {
   Computer,
@@ -53,7 +53,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 interface RepairCardProps {
   onCreateRepair: (repair: Omit<Repair, 'id' | 'createdAt' | 'readyAt' | 'archivedAt'>) => void;
-  technicians: Technician[];
+  assignableUsers: { id: string; name: string; }[];
   customers: Customer[];
   existingRepair?: Repair;
   preselectedCustomerId?: string | null;
@@ -96,7 +96,7 @@ const initialAccessoryOptions: MultiSelectOption[] = [
 
 export function RepairCard({ 
     onCreateRepair, 
-    technicians, 
+    assignableUsers, 
     customers, 
     existingRepair,
     preselectedCustomerId,
@@ -166,8 +166,8 @@ export function RepairCard({
     if (user?.role === 'Admin') {
         setAssignedTo('To Be Determined');
     } else if (user?.role === 'Student') {
-        const studentTech = technicians.find(t => t.email === user.email);
-        setAssignedTo(studentTech?.name ?? '');
+        const studentUser = assignableUsers.find(u => u.name === user.name);
+        setAssignedTo(studentUser?.name ?? '');
     } else {
         setAssignedTo('');
     }
@@ -182,10 +182,10 @@ export function RepairCard({
             setAssignedTo('To Be Determined');
         }
     } else if (user?.role === 'Student') {
-        const studentTech = technicians.find(t => t.email === user.email);
-        setAssignedTo(studentTech?.name ?? '');
+        const studentUser = assignableUsers.find(u => u.name === user.name);
+        setAssignedTo(studentUser?.name ?? '');
     }
-  }, [technicians, user, assignedTo, isEditMode]);
+  }, [assignableUsers, user, assignedTo, isEditMode]);
 
 
   const handleCreateOrUpdate = () => {
@@ -289,7 +289,7 @@ export function RepairCard({
   };
 
   const isAdmin = user?.role === 'Admin';
-  const loggedInTechnician = technicians.find(t => t.email === user?.email);
+  const loggedInUser = assignableUsers.find(u => u.name === user?.name);
   const customerOptions = (customers || []).map(c => ({ value: c.id, label: `${c.fullName} (${c.email})`}));
 
   return (
@@ -391,7 +391,7 @@ export function RepairCard({
             <Label htmlFor="assignedTo">Serviced By</Label>
             <Select value={assignedTo} onValueChange={setAssignedTo} disabled={!isAdmin}>
                 <SelectTrigger id="assignedTo">
-                    <SelectValue placeholder="Select technician" />
+                    <SelectValue placeholder="Select user" />
                 </SelectTrigger>
                 <SelectContent>
                     {isAdmin ? (
@@ -402,21 +402,21 @@ export function RepairCard({
                                     <span>To Be Determined</span>
                                 </div>
                             </SelectItem>
-                            {technicians.map(t => (
-                                <SelectItem key={t.id} value={t.name}>
+                            {assignableUsers.map(u => (
+                                <SelectItem key={u.id} value={u.name}>
                                     <div className="flex items-center gap-2">
                                         <User className="h-4 w-4 text-muted-foreground" />
-                                        <span>{t.name}</span>
+                                        <span>{u.name}</span>
                                     </div>
                                 </SelectItem>
                             ))}
                         </>
                     ) : (
-                        loggedInTechnician && (
-                            <SelectItem value={loggedInTechnician.name}>
+                        loggedInUser && (
+                            <SelectItem value={loggedInUser.name}>
                                 <div className="flex items-center gap-2">
                                     <User className="h-4 w-4 text-muted-foreground" />
-                                    <span>{loggedInTechnician.name}</span>
+                                    <span>{loggedInUser.name}</span>
                                 </div>
                             </SelectItem>
                         )

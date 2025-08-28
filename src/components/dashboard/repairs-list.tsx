@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import type { Repair, RepairStatus, Technician } from '@/lib/types';
+import type { Repair, RepairStatus } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -44,11 +44,11 @@ import { useUser } from '@/context/UserContext';
 
 interface RepairsListProps {
   repairs: Repair[];
-  technicians: Technician[];
+  assignableUsers: { id: string; name: string }[];
   onViewDetails: (repair: Repair) => void;
 }
 
-export function RepairsList({ repairs, technicians, onViewDetails }: RepairsListProps) {
+export function RepairsList({ repairs, assignableUsers, onViewDetails }: RepairsListProps) {
   const { user } = useUser();
   const { toast } = useToast();
   const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
@@ -82,20 +82,20 @@ export function RepairsList({ repairs, technicians, onViewDetails }: RepairsList
     }
   };
   
-  const handleAssignTech = async (repairId: string, techName: string) => {
-    if (techName === 'To Be Determined') return;
+  const handleAssignUser = async (repairId: string, userName: string) => {
+    if (userName === 'To Be Determined') return;
     try {
         const repairRef = doc(db, 'repairs', repairId);
-        await updateDoc(repairRef, { assignedToName: techName });
+        await updateDoc(repairRef, { assignedToName: userName });
         toast({
-            title: "Technician Assigned",
-            description: `Repair assigned to ${techName}.`,
+            title: "User Assigned",
+            description: `Repair assigned to ${userName}.`,
         });
     } catch (error) {
-        console.error("Error assigning technician: ", error);
+        console.error("Error assigning user: ", error);
         toast({
             title: 'Error',
-            description: 'Could not assign technician.',
+            description: 'Could not assign user.',
             variant: 'destructive'
         });
     }
@@ -120,18 +120,10 @@ export function RepairsList({ repairs, technicians, onViewDetails }: RepairsList
     }
   };
   
-  const getTechnicianName = (techIdentifier: string): string => {
-    if (!technicians || !techIdentifier || techIdentifier === 'To Be Determined') return 'To Be Determined';
-    
-    const identifier = techIdentifier.toLowerCase();
-    
-    const technicianByEmail = technicians.find(t => t.email.toLowerCase() === identifier);
-    if (technicianByEmail) return technicianByEmail.name;
-
-    const technicianByName = technicians.find(t => t.name.toLowerCase() === identifier);
-    if (technicianByName) return technicianByName.name;
-
-    return techIdentifier;
+  const getAssignedUserName = (userName: string): string => {
+    if (!assignableUsers || !userName || userName === 'To Be Determined') return 'To Be Determined';
+    const foundUser = assignableUsers.find(u => u.name.toLowerCase() === userName.toLowerCase());
+    return foundUser ? foundUser.name : userName;
   };
 
   const activeRepairs = (repairs || []).filter(r => r.status === 'Pending');
@@ -170,11 +162,11 @@ export function RepairsList({ repairs, technicians, onViewDetails }: RepairsList
                 <TableCell className="hidden lg:table-cell" onClick={(e) => e.stopPropagation()}>
                     {isAdmin ? (
                         <Select
-                            value={getTechnicianName(repair.assignedToName)}
-                            onValueChange={(value) => handleAssignTech(repair.id, value)}
+                            value={getAssignedUserName(repair.assignedToName)}
+                            onValueChange={(value) => handleAssignUser(repair.id, value)}
                         >
                             <SelectTrigger className="w-48">
-                                <SelectValue placeholder="Select technician" />
+                                <SelectValue placeholder="Select user" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="To Be Determined">
@@ -183,18 +175,18 @@ export function RepairsList({ repairs, technicians, onViewDetails }: RepairsList
                                         <span>To Be Determined</span>
                                     </div>
                                 </SelectItem>
-                                {technicians.map(t => (
-                                    <SelectItem key={t.id} value={t.name}>
+                                {assignableUsers.map(u => (
+                                    <SelectItem key={u.id} value={u.name}>
                                         <div className="flex items-center gap-2">
                                             <User className="h-4 w-4 text-muted-foreground" />
-                                            <span>{t.name}</span>
+                                            <span>{u.name}</span>
                                         </div>
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                     ) : (
-                        getTechnicianName(repair.assignedToName)
+                        getAssignedUserName(repair.assignedToName)
                     )}
                 </TableCell>
                 <TableCell className="hidden md:table-cell max-w-xs truncate">{repair.problemNotes}</TableCell>

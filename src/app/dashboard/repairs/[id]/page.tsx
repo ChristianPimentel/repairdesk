@@ -33,13 +33,13 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import type { Repair, Technician } from '@/lib/types';
+import type { Repair } from '@/lib/types';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, doc, getDoc, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import QRCode from 'qrcode';
 import { useUser } from '@/context/UserContext';
 import {
@@ -99,7 +99,7 @@ export default function RepairDetailsPage() {
     const repairId = params.id as string;
     
     const { toast } = useToast();
-    const { user, technicians, customers } = useUser();
+    const { user, assignableUsers, customers } = useUser();
 
     const [repair, setRepair] = useState<Repair | null>(null);
     const [loading, setLoading] = useState(true);
@@ -173,19 +173,12 @@ export default function RepairDetailsPage() {
     if (!repair) return null;
 
     const DeviceIcon = getDeviceIcon(repair.deviceType);
-
-    const getTechnicianName = (techIdentifier: string): string => {
-        if (!technicians || !techIdentifier) return 'Unassigned';
-        
-        const identifier = techIdentifier.toLowerCase();
-        
-        const technicianByEmail = technicians.find(t => t.email.toLowerCase() === identifier);
-        if (technicianByEmail) return technicianByEmail.name;
     
-        const technicianByName = technicians.find(t => t.name.toLowerCase() === identifier);
-        if (technicianByName) return technicianByName.name;
-    
-        return techIdentifier;
+    const getAssignedUserName = (userName: string): string => {
+        if (!assignableUsers || !userName) return 'Unassigned';
+        
+        const foundUser = assignableUsers.find(u => u.name.toLowerCase() === userName.toLowerCase());
+        return foundUser ? foundUser.name : userName;
     };
     
     const handleCloneRepair = () => {
@@ -390,7 +383,7 @@ export default function RepairDetailsPage() {
                         <h3 className="font-semibold mb-2 flex items-center gap-2"><Wrench className="h-4 w-4"/>Repair Status</h3>
                         <div className="flex items-center gap-2">
                             <Badge className={cn("border-transparent", getStatusClass(repair.status))}>{repair.status}</Badge>
-                            <span className="text-sm text-muted-foreground">Serviced by {getTechnicianName(repair.assignedToName)}</span>
+                            <span className="text-sm text-muted-foreground">Serviced by {getAssignedUserName(repair.assignedToName)}</span>
                         </div>
                     </div>
                     
