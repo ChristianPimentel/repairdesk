@@ -38,6 +38,7 @@ export type Technician = {
 
 export type Admin = {
   id: string;
+  name: string;
   email: string;
   password?: string;
   forcePasswordChange?: boolean;
@@ -45,6 +46,7 @@ export type Admin = {
 
 export type User = {
     email: string;
+    name: string;
     role: 'Admin' | 'Student';
 }
 

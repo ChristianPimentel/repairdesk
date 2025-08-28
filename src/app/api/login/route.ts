@@ -19,6 +19,8 @@ export async function POST(req: NextRequest) {
         const admin = adminDoc.data() as Admin;
 
         if (admin.password === password) {
+            // Note: We are not sending the full admin object back for security.
+            // The client-side will receive the name from the UserContext after successful login.
             return NextResponse.json({ success: true, forcePasswordChange: admin.forcePasswordChange || false }, { status: 200 });
         } else {
             return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });

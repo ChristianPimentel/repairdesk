@@ -34,13 +34,15 @@ import Image from 'next/image';
 
 export default function AdminsPage() {
     const { user, admins } = useUser();
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [editingAdmin, setEditingAdmin] = useState<Admin | null>(null);
+    const [editedName, setEditedName] = useState('');
     const [editedEmail, setEditedEmail] = useState('');
 
     const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
     const [qrCodeUrl, setQrCodeUrl] = useState('');
-    const [currentAdminInfo, setCurrentAdminInfo] = useState<{ email: string, pass: string } | null>(null);
+    const [currentAdminInfo, setCurrentAdminInfo] = useState<{ name: string, email: string, pass: string } | null>(null);
     const [isAddAdminDialogOpen, setIsAddAdminDialogOpen] = useState(false);
 
     const { toast } = useToast();
@@ -55,17 +57,17 @@ export default function AdminsPage() {
         return retVal;
     }
 
-    const showQrCodeDialog = async (adminEmail: string, tempPass: string) => {
+    const showQrCodeDialog = async (adminName: string, adminEmail: string, tempPass: string) => {
         const loginUrl = `${window.location.origin}/?email=${encodeURIComponent(adminEmail)}&password=${encodeURIComponent(tempPass)}`;
         const qrUrl = await QRCode.toDataURL(loginUrl);
         setQrCodeUrl(qrUrl);
-        setCurrentAdminInfo({ email: adminEmail, pass: tempPass });
+        setCurrentAdminInfo({ name: adminName, email: adminEmail, pass: tempPass });
         setIsQrDialogOpen(true);
     }
 
     const handleAddAdmin = async () => {
-        if (!email) {
-            toast({ title: 'Missing Information', description: 'Please provide an email.', variant: 'destructive' });
+        if (!name || !email) {
+            toast({ title: 'Missing Information', description: 'Please provide a name and email.', variant: 'destructive' });
             return;
         }
         if (admins.some(a => a.email.toLowerCase() === email.toLowerCase())) {
@@ -75,6 +77,7 @@ export default function AdminsPage() {
 
         const tempPassword = generatePassword();
         const newAdmin = {
+            name,
             email: email.toLowerCase(),
             password: tempPassword,
             forcePasswordChange: true,
@@ -83,7 +86,8 @@ export default function AdminsPage() {
         try {
             await addDoc(collection(db, 'admins'), newAdmin);
             setIsAddAdminDialogOpen(false); // Close add dialog
-            showQrCodeDialog(email, tempPassword);
+            showQrCodeDialog(name, email, tempPassword);
+            setName('');
             setEmail('');
         } catch (error) {
             console.error("Error adding admin: ", error);
@@ -107,19 +111,21 @@ export default function AdminsPage() {
 
     const handleEditAdmin = (admin: Admin) => {
         setEditingAdmin(admin);
+        setEditedName(admin.name);
         setEditedEmail(admin.email);
     };
 
     const handleCancelEdit = () => {
         setEditingAdmin(null);
+        setEditedName('');
         setEditedEmail('');
     };
 
     const handleUpdateAdmin = async () => {
         if (!editingAdmin) return;
 
-        if (!editedEmail) {
-            toast({ title: 'Missing Information', description: 'Please provide an email.', variant: 'destructive' });
+        if (!editedName || !editedEmail) {
+            toast({ title: 'Missing Information', description: 'Please provide a name and email.', variant: 'destructive' });
             return;
         }
         if (editedEmail.toLowerCase() !== editingAdmin.email.toLowerCase() && admins.some(a => a.email.toLowerCase() === editedEmail.toLowerCase())) {
@@ -129,8 +135,8 @@ export default function AdminsPage() {
 
         try {
             const adminRef = doc(db, 'admins', editingAdmin.id);
-            await updateDoc(adminRef, { email: editedEmail.toLowerCase() });
-            toast({ title: 'Admin Updated', description: `The admin's email has been updated.` });
+            await updateDoc(adminRef, { name: editedName, email: editedEmail.toLowerCase() });
+            toast({ title: 'Admin Updated', description: `The admin's details have been updated.` });
             handleCancelEdit();
         } catch (error) {
             console.error("Error updating admin: ", error);
@@ -143,7 +149,7 @@ export default function AdminsPage() {
         try {
             const adminRef = doc(db, 'admins', admin.id);
             await updateDoc(adminRef, { password: newPassword, forcePasswordChange: true });
-            showQrCodeDialog(admin.email, newPassword);
+            showQrCodeDialog(admin.name, admin.email, newPassword);
         } catch (error) {
             console.error("Error resetting password: ", error);
             toast({ title: 'Error', description: 'Could not reset password.', variant: 'destructive' });
@@ -188,10 +194,14 @@ export default function AdminsPage() {
                                     <DialogHeader>
                                         <DialogTitle>Add New Admin</DialogTitle>
                                         <DialogDescription>
-                                            Enter the email for the new administrator. They will be given a temporary password.
+                                            Enter the details for the new administrator. They will be given a temporary password.
                                         </DialogDescription>
                                     </DialogHeader>
                                     <div className="space-y-4 py-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="adminName">Name</Label>
+                                            <Input id="adminName" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., John Doe"/>
+                                        </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="adminEmail">Email</Label>
                                             <Input id="adminEmail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="e.g., admin@example.com"/>
@@ -219,6 +229,7 @@ export default function AdminsPage() {
                                     admins.map((admin) => (
                                         editingAdmin?.id === admin.id ? (
                                             <div key={admin.id} className="flex flex-col gap-2 rounded-md border p-3 bg-secondary/50">
+                                                <Input type="text" value={editedName} onChange={e => setEditedName(e.target.value)} placeholder="Name"/>
                                                 <Input type="email" value={editedEmail} onChange={e => setEditedEmail(e.target.value)} placeholder="Email"/>
                                                 <div className="flex justify-end gap-2 mt-1">
                                                     <Button variant="ghost" size="icon" onClick={handleCancelEdit}><X className="h-4 w-4" /></Button>
@@ -228,10 +239,11 @@ export default function AdminsPage() {
                                         ) : (
                                             <div key={admin.id} className="flex items-center justify-between rounded-md border p-3">
                                                 <div>
-                                                    <p className="font-medium">{admin.email}</p>
+                                                    <p className="font-medium">{admin.name}</p>
+                                                    <p className="text-sm text-muted-foreground">{admin.email}</p>
                                                 </div>
                                                 <div className="flex gap-1">
-                                                    <Button variant="ghost" size="icon" onClick={() => showQrCodeDialog(admin.email, admin.password || '')}>
+                                                    <Button variant="ghost" size="icon" onClick={() => showQrCodeDialog(admin.name, admin.email, admin.password || '')}>
                                                         <QrCode className="h-4 w-4" />
                                                     </Button>
                                                     <Button variant="ghost" size="icon" onClick={() => handleResetPassword(admin)}>
@@ -264,8 +276,8 @@ export default function AdminsPage() {
                                 {qrCodeUrl && <Image src={qrCodeUrl} alt="Admin Login QR Code" width={250} height={250} />}
                                 {currentAdminInfo && (
                                     <div className="text-center">
-                                        <p className="font-medium">{currentAdminInfo.email}</p>
-                                        <p className="text-sm text-muted-foreground">Temporary Password:</p>
+                                        <p className="font-medium">{currentAdminInfo.name}</p>
+                                        <p className="text-sm text-muted-foreground">{currentAdminInfo.email}</p>
                                         <p className="text-lg font-mono bg-muted p-2 rounded-md">{currentAdminInfo.pass}</p>
                                     </div>
                                 )}

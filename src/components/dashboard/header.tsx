@@ -127,14 +127,14 @@ export function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar>
-                 <AvatarImage src={undefined} alt={user?.email ?? ''} />
-                <AvatarFallback>{user?.email?.[0]?.toUpperCase() ?? 'U'}</AvatarFallback>
+                 <AvatarImage src={undefined} alt={user?.name ?? ''} />
+                <AvatarFallback>{user?.name?.[0]?.toUpperCase() ?? 'U'}</AvatarFallback>
               </Avatar>
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>{user?.email} ({user?.role})</DropdownMenuLabel>
+            <DropdownMenuLabel>{user?.name} ({user?.role})</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {user?.role === 'Admin' && (
                 <>

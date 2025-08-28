@@ -46,7 +46,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const repairsQuery = query(collection(db, 'repairs'), orderBy('createdAt', 'desc'));
     const customersQuery = query(collection(db, 'customers'), orderBy('fullName'));
     const donationsQuery = query(collection(db, 'donations'), orderBy('donatedAt', 'desc'));
-    const adminsQuery = query(collection(db, 'admins'), orderBy('email'));
+    const adminsQuery = query(collection(db, 'admins'), orderBy('name'));
 
     
     const unsubTechnicians = onSnapshot(techniciansQuery, (snapshot) => {

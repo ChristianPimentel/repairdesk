@@ -1,8 +1,11 @@
 {
   "/api/login/route": "app/api/login/route.js",
+  "/dashboard/admins/page": "app/dashboard/admins/page.js",
   "/dashboard/archive/page": "app/dashboard/archive/page.js",
+  "/dashboard/edit-repair/[id]/page": "app/dashboard/edit-repair/[id]/page.js",
   "/dashboard/new-repair/page": "app/dashboard/new-repair/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/repairs/[id]/page": "app/dashboard/repairs/[id]/page.js",
+  "/dashboard/technicians/page": "app/dashboard/technicians/page.js",
   "/page": "app/page.js"
 }

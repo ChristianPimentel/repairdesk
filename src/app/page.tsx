@@ -23,13 +23,14 @@ import { Input } from '@/components/ui/input';
 import { CustomIcon } from '@/components/icons/custom-icon';
 import { useUser } from '@/context/UserContext';
 import { useToast } from '@/hooks/use-toast';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import type { Admin } from '@/lib/types';
 
 function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, login, loading, technicians } = useUser();
+  const { user, login, loading, technicians, admins } = useUser();
   const { toast } = useToast();
   const [role, setRole] = useState<'Admin' | 'Student'>('Student');
   const [email, setEmail] = useState('');
@@ -44,6 +45,7 @@ function LoginPageContent() {
             if (snapshot.empty) {
                 console.log("No admins found, creating default admin.");
                 await addDoc(adminsCollection, {
+                    name: 'Admin User',
                     email: 'admin@example.com',
                     password: 'password',
                     forcePasswordChange: true,
@@ -62,7 +64,7 @@ function LoginPageContent() {
     const prefillPassword = searchParams.get('password');
     if (prefillEmail) {
         setEmail(prefillEmail);
-        setRole('Student');
+        setRole('Student'); // Default to student role for QR code login
     }
     if (prefillPassword) {
         setPassword(prefillPassword);
@@ -77,37 +79,29 @@ function LoginPageContent() {
 
   const handleLogin = async () => {
     if (role === 'Admin') {
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+        const q = query(collection(db, "admins"), where("email", "==", email.toLowerCase()));
+        const querySnapshot = await getDocs(q);
 
-            const data = await response.json();
-
-            if (response.ok) {
-                if (data.forcePasswordChange) {
-                    sessionStorage.setItem('tempUser', JSON.stringify({ email, role: 'Admin' }));
-                    router.push('/change-password');
-                } else {
-                    login({ email, role: 'Admin' });
-                    router.push('/dashboard');
-                }
-            } else {
-                toast({
-                    title: 'Invalid Credentials',
-                    description: data.message || 'Please check your email and password.',
-                    variant: 'destructive',
-                });
-            }
-        } catch (error) {
-            toast({
-                title: 'Login Error',
-                description: 'An unexpected error occurred. Please try again.',
-                variant: 'destructive',
-            });
+        if (querySnapshot.empty) {
+            toast({ title: 'Invalid Credentials', description: 'Please check your email and password.', variant: 'destructive' });
+            return;
         }
+
+        const adminDoc = querySnapshot.docs[0];
+        const admin = adminDoc.data() as Admin;
+
+        if (admin.password === password) {
+            if (admin.forcePasswordChange) {
+                sessionStorage.setItem('tempUser', JSON.stringify({ email, role: 'Admin' }));
+                router.push('/change-password');
+            } else {
+                login({ email, name: admin.name, role: 'Admin' });
+                router.push('/dashboard');
+            }
+        } else {
+            toast({ title: 'Invalid Credentials', description: 'Please check your email and password.', variant: 'destructive' });
+        }
+
     } else { // Student Login
         const technician = technicians.find(tech => tech.email.toLowerCase() === email.toLowerCase());
         
@@ -116,7 +110,7 @@ function LoginPageContent() {
                 sessionStorage.setItem('tempUser', JSON.stringify({ email, role: 'Student' }));
                 router.push('/change-password');
             } else {
-                login({ email, role: 'Student' });
+                login({ email, name: technician.name, role: 'Student' });
                 router.push('/dashboard');
             }
         } else {
