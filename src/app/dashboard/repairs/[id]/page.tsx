@@ -28,7 +28,8 @@ import {
     MessageSquare,
     ChevronLeft,
     Trash2,
-    Pencil
+    Pencil,
+    Link as LinkIcon,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -397,6 +398,23 @@ export default function RepairDetailsPage() {
                             {repair.archivedAt && <li><strong>Archived:</strong> {format(repair.archivedAt, 'PPp')}</li>}
                         </ul>
                     </div>
+
+                    {repair.linkURL && (
+                      <>
+                        <Separator />
+                        <div>
+                          <h3 className="font-semibold mb-2 flex items-center gap-2"><LinkIcon className="h-4 w-4" />Associated Link</h3>
+                          <a 
+                            href={repair.linkURL} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm text-primary hover:underline break-all"
+                          >
+                            {repair.linkURL}
+                          </a>
+                        </div>
+                      </>
+                    )}
                     
                     {repair.status !== 'Archived' && (
                         <>

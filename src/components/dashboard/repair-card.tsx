@@ -35,6 +35,7 @@ import {
   Eye,
   EyeOff,
   Keyboard,
+  Link,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import {
@@ -120,6 +121,7 @@ export function RepairCard({
   const [accessoryOptions, setAccessoryOptions] = useState<MultiSelectOption[]>(initialAccessoryOptions);
   const [problemNotes, setProblemNotes] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
+  const [linkURL, setLinkURL] = useState('');
   const signatureRef = useRef<SignaturePadRef>(null);
   const [typedSignature, setTypedSignature] = useState('');
   const [isAddBrandOpen, setIsAddBrandOpen] = useState(false);
@@ -140,6 +142,7 @@ export function RepairCard({
         setAccessories(existingRepair.accessories);
         setProblemNotes(existingRepair.problemNotes);
         setAssignedTo(existingRepair.assignedToName);
+        setLinkURL(existingRepair.linkURL ?? '');
         if (typeof existingRepair.signature === 'string') {
             setTypedSignature(existingRepair.signature);
         }
@@ -163,6 +166,7 @@ export function RepairCard({
     setShowPassword(false);
     setAccessories([]);
     setProblemNotes('');
+    setLinkURL('');
     if (user?.role === 'Admin') {
         setAssignedTo('To Be Determined');
     } else if (user?.role === 'Student') {
@@ -239,6 +243,7 @@ export function RepairCard({
         status: existingRepair?.status || 'Pending' as const,
         signature: signatureData || existingRepair?.signature || null,
         assignedToName: assignedTo,
+        linkURL: linkURL,
     };
     
     onCreateRepair(newRepair);
@@ -434,6 +439,20 @@ export function RepairCard({
             value={problemNotes}
             onChange={e => setProblemNotes(e.target.value)}
           />
+        </div>
+
+        <div className="space-y-2">
+            <Label htmlFor="linkUrl">Associated Link (Optional)</Label>
+            <div className="relative">
+                <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                    id="linkUrl"
+                    placeholder="https://example.com/product-info"
+                    value={linkURL}
+                    onChange={(e) => setLinkURL(e.target.value)}
+                    className="pl-9"
+                />
+            </div>
         </div>
 
         <div className="space-y-2">
