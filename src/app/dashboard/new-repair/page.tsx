@@ -61,6 +61,7 @@ function NewRepairContent() {
     const passwordPin = searchParams.get('passwordPin');
     const accessories = searchParams.get('accessories');
     const problemNotes = searchParams.get('problemNotes');
+    const observationNotes = searchParams.get('observationNotes');
     
     useEffect(() => {
         if (typeof window !== 'undefined' && navigator.share) {
@@ -179,6 +180,7 @@ function NewRepairContent() {
                     preselectedPasswordPin={passwordPin}
                     preselectedAccessories={accessories ? accessories.split(',') : undefined}
                     preselectedProblemNotes={problemNotes}
+                    preselectedObservationNotes={observationNotes}
                 />
             </div>
             <Dialog open={isQrDialogOpen} onOpenChange={(isOpen) => {

@@ -18,6 +18,7 @@ export type Repair = {
   model: string;
   accessories: string[];
   problemNotes: string;
+  observationNotes?: string;
   passwordPin?: string;
   status: RepairStatus;
   assignedToName: string;

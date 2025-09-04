@@ -36,6 +36,7 @@ import {
   EyeOff,
   Keyboard,
   Link,
+  ClipboardList,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import {
@@ -64,6 +65,7 @@ interface RepairCardProps {
   preselectedPasswordPin?: string | null;
   preselectedAccessories?: string[];
   preselectedProblemNotes?: string | null;
+  preselectedObservationNotes?: string | null;
 }
 
 const deviceTypes = [
@@ -107,6 +109,7 @@ export function RepairCard({
     preselectedPasswordPin,
     preselectedAccessories,
     preselectedProblemNotes,
+    preselectedObservationNotes,
 }: RepairCardProps) {
   const { user } = useUser();
   const isMobile = useIsMobile();
@@ -120,6 +123,7 @@ export function RepairCard({
   const [accessories, setAccessories] = useState<string[]>([]);
   const [accessoryOptions, setAccessoryOptions] = useState<MultiSelectOption[]>(initialAccessoryOptions);
   const [problemNotes, setProblemNotes] = useState('');
+  const [observationNotes, setObservationNotes] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
   const [linkURL, setLinkURL] = useState('');
   const signatureRef = useRef<SignaturePadRef>(null);
@@ -141,6 +145,7 @@ export function RepairCard({
         setPasswordPin(existingRepair.passwordPin ?? '');
         setAccessories(existingRepair.accessories);
         setProblemNotes(existingRepair.problemNotes);
+        setObservationNotes(existingRepair.observationNotes ?? '');
         setAssignedTo(existingRepair.assignedToName);
         setLinkURL(existingRepair.linkURL ?? '');
         if (typeof existingRepair.signature === 'string') {
@@ -154,8 +159,9 @@ export function RepairCard({
         if (preselectedPasswordPin) setPasswordPin(preselectedPasswordPin);
         if (preselectedAccessories) setAccessories(preselectedAccessories);
         if (preselectedProblemNotes) setProblemNotes(preselectedProblemNotes);
+        if (preselectedObservationNotes) setObservationNotes(preselectedObservationNotes);
     }
-  }, [existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes]);
+  }, [existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes, preselectedObservationNotes]);
 
   const resetForm = () => {
     setSelectedCustomerId('');
@@ -166,6 +172,7 @@ export function RepairCard({
     setShowPassword(false);
     setAccessories([]);
     setProblemNotes('');
+    setObservationNotes('');
     setLinkURL('');
     if (user?.role === 'Admin') {
         setAssignedTo('To Be Determined');
@@ -240,6 +247,7 @@ export function RepairCard({
         passwordPin,
         accessories,
         problemNotes,
+        observationNotes,
         status: existingRepair?.status || 'Pending' as const,
         signature: signatureData || existingRepair?.signature || null,
         assignedToName: assignedTo,
@@ -438,6 +446,16 @@ export function RepairCard({
             placeholder="Describe the issue in detail…"
             value={problemNotes}
             onChange={e => setProblemNotes(e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="observationNotes">Observation Notes</Label>
+          <Textarea
+            id="observationNotes"
+            placeholder="Describe the physical condition of the device (e.g., scratches, dents, dust)..."
+            value={observationNotes}
+            onChange={e => setObservationNotes(e.target.value)}
           />
         </div>
 

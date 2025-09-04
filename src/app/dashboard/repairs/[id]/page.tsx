@@ -30,6 +30,7 @@ import {
     Trash2,
     Pencil,
     Link as LinkIcon,
+    Eye,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -197,6 +198,9 @@ export default function RepairDetailsPage() {
             queryParams.set('accessories', repair.accessories.join(','));
         }
         queryParams.set('problemNotes', repair.problemNotes);
+        if (repair.observationNotes) {
+            queryParams.set('observationNotes', repair.observationNotes);
+        }
 
         router.push(`/dashboard/new-repair?${queryParams.toString()}`);
     }
@@ -375,6 +379,16 @@ export default function RepairDetailsPage() {
                         <h3 className="font-semibold mb-2 flex items-center gap-2"><ClipboardList className="h-4 w-4"/>Problem Notes</h3>
                         <p className="text-sm text-muted-foreground bg-secondary p-3 rounded-md">{repair.problemNotes}</p>
                     </div>
+
+                    {repair.observationNotes && (
+                        <>
+                            <Separator />
+                            <div>
+                                <h3 className="font-semibold mb-2 flex items-center gap-2"><Eye className="h-4 w-4"/>Observation Notes</h3>
+                                <p className="text-sm text-muted-foreground bg-secondary p-3 rounded-md">{repair.observationNotes}</p>
+                            </div>
+                        </>
+                    )}
 
                 </div>
 

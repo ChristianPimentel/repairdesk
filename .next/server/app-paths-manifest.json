@@ -1,4 +1,5 @@
 {
+  "/dashboard/edit-repair/[id]/page": "app/dashboard/edit-repair/[id]/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/repairs/[id]/page": "app/dashboard/repairs/[id]/page.js",
   "/page": "app/page.js"
