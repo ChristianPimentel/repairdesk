@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -169,8 +168,8 @@ export function RepairCard({
         }
 
         // Add the existing brand to the options if it's not already there
-        if (existingRepair.brand && !brandOptions.some(opt => opt.value === existingRepair.brand)) {
-          setBrandOptions(prev => [{ value: existingRepair.brand, label: existingRepair.brand }, ...prev]);
+        if (existingRepair.brand && !initialBrandOptions.some(opt => opt.value === existingRepair.brand)) {
+          setBrandOptions(prev => [{ value: existingRepair.brand, label: existingRepair.brand }, ...prev.filter(p => p.value !== existingRepair.brand)]);
         }
     } else {
         if (preselectedCustomerId) setSelectedCustomerId(preselectedCustomerId);
@@ -182,7 +181,7 @@ export function RepairCard({
         if (preselectedProblemNotes) setProblemNotes(preselectedProblemNotes);
         if (preselectedObservationNotes) setObservationNotes(preselectedObservationNotes);
     }
-  }, [existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes, preselectedObservationNotes, brandOptions]);
+  }, [existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes, preselectedObservationNotes]);
 
   const resetForm = () => {
     setSelectedCustomerId('');

@@ -1497,6 +1497,16 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
             if (existingRepair.signature) {
                 setCustomerIsPresent(existingRepair.signature !== 'Customer Was Not Present');
             }
+            // Add the existing brand to the options if it's not already there
+            if (existingRepair.brand && !brandOptions.some((opt)=>opt.value === existingRepair.brand)) {
+                setBrandOptions((prev)=>[
+                        {
+                            value: existingRepair.brand,
+                            label: existingRepair.brand
+                        },
+                        ...prev
+                    ]);
+            }
         } else {
             if (preselectedCustomerId) setSelectedCustomerId(preselectedCustomerId);
             if (preselectedDeviceType) setDeviceType(preselectedDeviceType);
@@ -1516,7 +1526,8 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
         preselectedPasswordPin,
         preselectedAccessories,
         preselectedProblemNotes,
-        preselectedObservationNotes
+        preselectedObservationNotes,
+        brandOptions
     ]);
     const resetForm = ()=>{
         setSelectedCustomerId('');
@@ -1712,30 +1723,30 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 children: isEditMode ? `Editing Repair #${existingRepair.id.slice(-6).toUpperCase()}` : 'New Repair Intake'
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 355,
+                                lineNumber: 359,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
                                 children: isEditMode ? `Update the details for this repair.` : `Fill in the details for the new repair job.`
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 356,
+                                lineNumber: 360,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 354,
+                        lineNumber: 358,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                    lineNumber: 353,
+                    lineNumber: 357,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                lineNumber: 352,
+                lineNumber: 356,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1749,7 +1760,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 children: "Select Customer"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 364,
+                                lineNumber: 368,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$combobox$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Combobox"], {
@@ -1761,13 +1772,13 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 noResultsText: "No customer found."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 365,
+                                lineNumber: 369,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 363,
+                        lineNumber: 367,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1781,7 +1792,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         children: "Device Type"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 377,
+                                        lineNumber: 381,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -1794,12 +1805,12 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                     placeholder: "Select device type"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 380,
+                                                    lineNumber: 384,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 379,
+                                                lineNumber: 383,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -1812,42 +1823,42 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                                     className: "h-4 w-4 text-muted-foreground"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                    lineNumber: 386,
+                                                                    lineNumber: 390,
                                                                     columnNumber: 24
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                     children: d.value
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                    lineNumber: 387,
+                                                                    lineNumber: 391,
                                                                     columnNumber: 24
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                            lineNumber: 385,
+                                                            lineNumber: 389,
                                                             columnNumber: 22
                                                         }, this)
                                                     }, d.value, false, {
                                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                        lineNumber: 384,
+                                                        lineNumber: 388,
                                                         columnNumber: 20
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 382,
+                                                lineNumber: 386,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 378,
+                                        lineNumber: 382,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 376,
+                                lineNumber: 380,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1858,7 +1869,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         children: "Brand"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 395,
+                                        lineNumber: 399,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1874,12 +1885,12 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                             placeholder: "Select brand"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                            lineNumber: 399,
+                                                            lineNumber: 403,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                        lineNumber: 398,
+                                                        lineNumber: 402,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -1888,18 +1899,18 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                                 children: b.label
                                                             }, b.value, false, {
                                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                lineNumber: 403,
+                                                                lineNumber: 407,
                                                                 columnNumber: 29
                                                             }, this))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                        lineNumber: 401,
+                                                        lineNumber: 405,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 397,
+                                                lineNumber: 401,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1911,30 +1922,30 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                     className: "h-4 w-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 408,
+                                                    lineNumber: 412,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 407,
+                                                lineNumber: 411,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 396,
+                                        lineNumber: 400,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 394,
+                                lineNumber: 398,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 375,
+                        lineNumber: 379,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1948,7 +1959,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         children: "Model"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 416,
+                                        lineNumber: 420,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1958,13 +1969,13 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         onChange: (e)=>setModel(e.target.value)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 417,
+                                        lineNumber: 421,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 415,
+                                lineNumber: 419,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1975,7 +1986,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         children: "Device Password / PIN"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 420,
+                                        lineNumber: 424,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1989,7 +2000,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                 onChange: (e)=>setPasswordPin(e.target.value)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 422,
+                                                lineNumber: 426,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2001,36 +2012,36 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                     className: "h-4 w-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 424,
+                                                    lineNumber: 428,
                                                     columnNumber: 41
                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__["Eye"], {
                                                     className: "h-4 w-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 424,
+                                                    lineNumber: 428,
                                                     columnNumber: 74
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 423,
+                                                lineNumber: 427,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 421,
+                                        lineNumber: 425,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 419,
+                                lineNumber: 423,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 414,
+                        lineNumber: 418,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2044,7 +2055,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         children: "Accessories"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 432,
+                                        lineNumber: 436,
                                         columnNumber: 14
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2057,7 +2068,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                 placeholder: "Select accessories..."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 434,
+                                                lineNumber: 438,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2069,24 +2080,24 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                     className: "h-4 w-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 441,
+                                                    lineNumber: 445,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 440,
+                                                lineNumber: 444,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 433,
+                                        lineNumber: 437,
                                         columnNumber: 14
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 431,
+                                lineNumber: 435,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2097,7 +2108,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         children: "Serviced By"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 446,
+                                        lineNumber: 450,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -2111,12 +2122,12 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                     placeholder: "Select user"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 449,
+                                                    lineNumber: 453,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 448,
+                                                lineNumber: 452,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2131,25 +2142,25 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                                         className: "h-4 w-4 text-muted-foreground"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                        lineNumber: 456,
+                                                                        lineNumber: 460,
                                                                         columnNumber: 37
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                         children: "To Be Determined"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                        lineNumber: 457,
+                                                                        lineNumber: 461,
                                                                         columnNumber: 37
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                lineNumber: 455,
+                                                                lineNumber: 459,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                            lineNumber: 454,
+                                                            lineNumber: 458,
                                                             columnNumber: 29
                                                         }, this),
                                                         assignableUsers.map((u)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2161,25 +2172,25 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                                             className: "h-4 w-4 text-muted-foreground"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                            lineNumber: 463,
+                                                                            lineNumber: 467,
                                                                             columnNumber: 41
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                             children: u.name
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                            lineNumber: 464,
+                                                                            lineNumber: 468,
                                                                             columnNumber: 41
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                    lineNumber: 462,
+                                                                    lineNumber: 466,
                                                                     columnNumber: 37
                                                                 }, this)
                                                             }, u.id, false, {
                                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                lineNumber: 461,
+                                                                lineNumber: 465,
                                                                 columnNumber: 33
                                                             }, this))
                                                     ]
@@ -2192,48 +2203,48 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                                 className: "h-4 w-4 text-muted-foreground"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                lineNumber: 473,
+                                                                lineNumber: 477,
                                                                 columnNumber: 37
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 children: loggedInUser.name
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                                lineNumber: 474,
+                                                                lineNumber: 478,
                                                                 columnNumber: 37
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                        lineNumber: 472,
+                                                        lineNumber: 476,
                                                         columnNumber: 33
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 471,
+                                                    lineNumber: 475,
                                                     columnNumber: 29
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 451,
+                                                lineNumber: 455,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 447,
+                                        lineNumber: 451,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 445,
+                                lineNumber: 449,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 430,
+                        lineNumber: 434,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2244,7 +2255,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 children: "Problem Notes"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 485,
+                                lineNumber: 489,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Textarea"], {
@@ -2254,13 +2265,13 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 onChange: (e)=>setProblemNotes(e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 486,
+                                lineNumber: 490,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 484,
+                        lineNumber: 488,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2271,7 +2282,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 children: "Observation Notes"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 495,
+                                lineNumber: 499,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Textarea"], {
@@ -2281,13 +2292,13 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 onChange: (e)=>setObservationNotes(e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 496,
+                                lineNumber: 500,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 494,
+                        lineNumber: 498,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2297,7 +2308,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 children: "Associated Links (Optional)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 505,
+                                lineNumber: 509,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2313,7 +2324,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                             className: "absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                            lineNumber: 510,
+                                                            lineNumber: 514,
                                                             columnNumber: 30
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2323,13 +2334,13 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                             className: "pl-9"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                            lineNumber: 511,
+                                                            lineNumber: 515,
                                                             columnNumber: 30
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 509,
+                                                    lineNumber: 513,
                                                     columnNumber: 25
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2338,23 +2349,23 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                     size: "icon",
                                                     className: "shrink-0",
                                                     onClick: ()=>removeLinkInput(index),
-                                                    disabled: linkURLs.length === 1 && linkURLs[0] === '',
+                                                    disabled: linkURLs.length === 1 && url.trim() === '',
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$trash$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Trash2$3e$__["Trash2"], {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                        lineNumber: 526,
+                                                        lineNumber: 530,
                                                         columnNumber: 29
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                    lineNumber: 518,
+                                                    lineNumber: 522,
                                                     columnNumber: 25
                                                 }, this)
                                             ]
                                         }, index, true, {
                                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                            lineNumber: 508,
+                                            lineNumber: 512,
                                             columnNumber: 21
                                         }, this)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2367,26 +2378,26 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                                 className: "mr-2 h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                                lineNumber: 531,
+                                                lineNumber: 535,
                                                 columnNumber: 21
                                             }, this),
                                             "Add Link"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 530,
+                                        lineNumber: 534,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 506,
+                                lineNumber: 510,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 504,
+                        lineNumber: 508,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2401,7 +2412,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     disabled: isEditMode
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 539,
+                                    lineNumber: 543,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -2410,18 +2421,18 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     children: "Customer is Present"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 545,
+                                    lineNumber: 549,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                            lineNumber: 538,
+                            lineNumber: 542,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 537,
+                        lineNumber: 541,
                         columnNumber: 9
                     }, this),
                     customerIsPresent && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2431,7 +2442,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 children: "Customer Liability Signature"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 556,
+                                lineNumber: 560,
                                 columnNumber: 15
                             }, this),
                             isMobile ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$signature$2d$pad$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -2440,7 +2451,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                 height: 200
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 558,
+                                lineNumber: 562,
                                 columnNumber: 17
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "relative",
@@ -2449,7 +2460,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         className: "absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 561,
+                                        lineNumber: 565,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2460,25 +2471,25 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         disabled: isEditMode && typedSignature !== ''
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 562,
+                                        lineNumber: 566,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                lineNumber: 560,
+                                lineNumber: 564,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 555,
+                        lineNumber: 559,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                lineNumber: 362,
+                lineNumber: 366,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardFooter"], {
@@ -2497,7 +2508,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                         children: "Clear Signature"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 575,
+                        lineNumber: 579,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2505,13 +2516,13 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                         children: isEditMode ? "Update Repair Ticket" : "Create Repair Ticket"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                        lineNumber: 588,
+                        lineNumber: 592,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                lineNumber: 574,
+                lineNumber: 578,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -2525,20 +2536,20 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     children: "Add New Brand"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 594,
+                                    lineNumber: 598,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Enter the name of the new brand you want to add to the list."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 595,
+                                    lineNumber: 599,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                            lineNumber: 593,
+                            lineNumber: 597,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2549,7 +2560,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     children: "Brand Name"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 600,
+                                    lineNumber: 604,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2559,13 +2570,13 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     onKeyDown: (e)=>e.key === 'Enter' && handleAddNewBrand()
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 601,
+                                    lineNumber: 605,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                            lineNumber: 599,
+                            lineNumber: 603,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -2578,12 +2589,12 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 605,
+                                        lineNumber: 609,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 604,
+                                    lineNumber: 608,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2591,24 +2602,24 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     children: "Add Brand"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 607,
+                                    lineNumber: 611,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                            lineNumber: 603,
+                            lineNumber: 607,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                    lineNumber: 592,
+                    lineNumber: 596,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                lineNumber: 591,
+                lineNumber: 595,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -2622,20 +2633,20 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     children: "Add New Accessory"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 615,
+                                    lineNumber: 619,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Enter the name of the new accessory you want to add to the list."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 616,
+                                    lineNumber: 620,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                            lineNumber: 614,
+                            lineNumber: 618,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2646,7 +2657,7 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     children: "Accessory Name"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 621,
+                                    lineNumber: 625,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2656,13 +2667,13 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     onKeyDown: (e)=>e.key === 'Enter' && handleAddNewAccessory()
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 622,
+                                    lineNumber: 626,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                            lineNumber: 620,
+                            lineNumber: 624,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -2675,12 +2686,12 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                        lineNumber: 626,
+                                        lineNumber: 630,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 625,
+                                    lineNumber: 629,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2688,30 +2699,30 @@ function RepairCard({ onCreateRepair, assignableUsers, customers, existingRepair
                                     children: "Add Accessory"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                                    lineNumber: 628,
+                                    lineNumber: 632,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                            lineNumber: 624,
+                            lineNumber: 628,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                    lineNumber: 613,
+                    lineNumber: 617,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/repair-card.tsx",
-                lineNumber: 612,
+                lineNumber: 616,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/repair-card.tsx",
-        lineNumber: 351,
+        lineNumber: 355,
         columnNumber: 5
     }, this);
 }
