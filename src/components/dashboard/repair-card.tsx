@@ -168,6 +168,10 @@ export function RepairCard({
             setCustomerIsPresent(existingRepair.signature !== 'Customer Was Not Present');
         }
 
+        // Add the existing brand to the options if it's not already there
+        if (existingRepair.brand && !brandOptions.some(opt => opt.value === existingRepair.brand)) {
+          setBrandOptions(prev => [{ value: existingRepair.brand, label: existingRepair.brand }, ...prev]);
+        }
     } else {
         if (preselectedCustomerId) setSelectedCustomerId(preselectedCustomerId);
         if (preselectedDeviceType) setDeviceType(preselectedDeviceType);
@@ -178,7 +182,7 @@ export function RepairCard({
         if (preselectedProblemNotes) setProblemNotes(preselectedProblemNotes);
         if (preselectedObservationNotes) setObservationNotes(preselectedObservationNotes);
     }
-  }, [existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes, preselectedObservationNotes]);
+  }, [existingRepair, preselectedCustomerId, preselectedDeviceType, preselectedBrand, preselectedModel, preselectedPasswordPin, preselectedAccessories, preselectedProblemNotes, preselectedObservationNotes, brandOptions]);
 
   const resetForm = () => {
     setSelectedCustomerId('');
@@ -521,7 +525,7 @@ export function RepairCard({
                             size="icon"
                             className="shrink-0"
                             onClick={() => removeLinkInput(index)}
-                            disabled={linkURLs.length === 1 && linkURLs[0] === ''}
+                            disabled={linkURLs.length === 1 && url.trim() === ''}
                         >
                             <Trash2 className="h-4 w-4" />
                         </Button>
