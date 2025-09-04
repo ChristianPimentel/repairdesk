@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -14,9 +15,9 @@ import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, UserPlus, X, Check, ClipboardPaste, KeyRound, Phone, QrCode } from 'lucide-react';
 import type { Technician } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { ScrollArea } from '../ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '../ui/textarea';
+import { Textarea } from '@/components/ui/textarea';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { useUser } from '@/context/UserContext';
@@ -32,7 +33,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import Image from 'next/image';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface TechnicianCardProps {
   technicians: Technician[];
@@ -460,3 +461,5 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
       </div>
   );
 }
+
+    
