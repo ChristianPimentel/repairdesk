@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, Check, X, FolderKanban, PlusCircle, UserPlus, KeyRound, QrCode } from 'lucide-react';
+import { Pencil, Trash2, Check, X, FolderKanban, PlusCircle, UserPlus, KeyRound, QrCode, ClipboardPaste, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { db } from '@/lib/firebase';
@@ -31,7 +31,6 @@ import {
     AlertDialogTrigger,
   } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
-import { Separator } from '@/components/ui/separator';
 import QRCode from 'qrcode';
 import Image from 'next/image';
 import {
@@ -44,10 +43,11 @@ import {
     DialogClose,
     DialogTrigger,
   } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function TechniciansPage() {
-    const { user, groups, technicians, setRepairs } = useUser();
+    const { user, groups, technicians } = useUser();
     const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
 
     // Group Management State
@@ -58,9 +58,12 @@ export default function TechniciansPage() {
     // Technician Management State
     const [techName, setTechName] = useState('');
     const [techEmail, setTechEmail] = useState('');
+    const [techPhone, setTechPhone] = useState('');
+    const [bulkText, setBulkText] = useState('');
     const [editingTechnician, setEditingTechnician] = useState<Technician | null>(null);
     const [editedTechName, setEditedTechName] = useState('');
     const [editedTechEmail, setEditedTechEmail] = useState('');
+    const [editedTechPhone, setEditedTechPhone] = useState('');
     const [isAddTechDialogOpen, setIsAddTechDialogOpen] = useState(false);
 
     // QR Code Dialog State
@@ -144,7 +147,15 @@ export default function TechniciansPage() {
     };
 
     // Technician Management Functions
-    const generatePassword = () => Math.random().toString(36).slice(-8);
+    const generatePassword = () => {
+        const length = 8;
+        const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+        let retVal = "";
+        for (let i = 0, n = charset.length; i < length; ++i) {
+            retVal += charset.charAt(Math.floor(Math.random() * n));
+        }
+        return retVal;
+    }
 
     const showQrCodeDialog = async (name: string, email: string, pass: string) => {
         const loginUrl = `${window.location.origin}/?email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`;
@@ -167,7 +178,7 @@ export default function TechniciansPage() {
         const newTechnician = {
             name: techName,
             email: techEmail.toLowerCase(),
-            phone: '',
+            phone: techPhone,
             group: selectedGroup?.name || 'Default',
             password: tempPassword,
             forcePasswordChange: true,
@@ -178,10 +189,81 @@ export default function TechniciansPage() {
             showQrCodeDialog(techName, techEmail, tempPassword);
             setTechName('');
             setTechEmail('');
+            setTechPhone('');
         } catch (error) {
             toast({ title: 'Error', description: 'Could not add technician.', variant: 'destructive' });
         }
     };
+
+    const handleBulkAddFromText = async () => {
+        if (!bulkText.trim()) {
+            toast({
+                title: 'No Input',
+                description: 'Please paste technician data into the text area.',
+                variant: 'destructive',
+            });
+            return;
+        }
+        
+        const addedTechnicians: {name: string, email: string, pass: string}[] = [];
+        const duplicates: string[] = [];
+        const existingEmails = new Set(technicians.map(t => t.email.toLowerCase()));
+        
+        const lines = bulkText.trim().split('\n');
+    
+        for (const line of lines) {
+            const parts = line.split(',').map(p => p.trim());
+            if (parts.length >= 2) {
+                const name = parts[0];
+                const email = parts[1];
+                const phone = parts[2] || '';
+                
+                if (name && email) {
+                    if (!existingEmails.has(email.toLowerCase())) {
+                        const tempPassword = generatePassword();
+                        const newTechnician = {
+                            name,
+                            email: email.toLowerCase(),
+                            phone,
+                            group: selectedGroup?.name || 'Default',
+                            password: tempPassword,
+                            forcePasswordChange: true,
+                        };
+                        try {
+                            await addDoc(collection(db, 'technicians'), newTechnician);
+                            addedTechnicians.push({ name, email, pass: tempPassword });
+                            existingEmails.add(email.toLowerCase());
+                        } catch (e) {
+                            // ignore failed adds
+                        }
+                    } else {
+                        duplicates.push(email);
+                    }
+                }
+            }
+        }
+    
+        if (addedTechnicians.length > 0) {
+            setIsAddTechDialogOpen(false);
+            const firstTech = addedTechnicians[0];
+            showQrCodeDialog(firstTech.name, firstTech.email, firstTech.pass);
+    
+            toast({
+                title: `${addedTechnicians.length} Technicians Added`,
+                description: `Showing QR for the first one. Others can be accessed from the list.`,
+            });
+        }
+    
+        if (duplicates.length > 0) {
+            toast({
+                title: 'Some Duplicates Skipped',
+                description: `${duplicates.length} technicians were not added because their email already exists.`,
+                variant: 'destructive',
+            });
+        }
+        
+        setBulkText('');
+      };
 
     const handleDeleteTechnician = async (id: string) => {
         try {
@@ -203,7 +285,7 @@ export default function TechniciansPage() {
         }
         try {
             const techRef = doc(db, 'technicians', technician.id);
-            await updateDoc(techRef, { name: editedTechName, email: editedTechEmail.toLowerCase() });
+            await updateDoc(techRef, { name: editedTechName, email: editedTechEmail.toLowerCase(), phone: editedTechPhone });
             toast({ title: 'Technician Updated', description: "The technician's details have been updated." });
             setEditingTechnician(null);
         } catch (error) {
@@ -338,21 +420,55 @@ export default function TechniciansPage() {
                                         <DialogContent>
                                             <DialogHeader>
                                                 <DialogTitle>Add New Technician to "{selectedGroup?.name}"</DialogTitle>
+                                                <DialogDescription>
+                                                    Use the tabs to add a single technician or multiple at once.
+                                                </DialogDescription>
                                             </DialogHeader>
-                                            <div className="space-y-4 py-4">
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="techName">Full Name</Label>
-                                                    <Input id="techName" value={techName} onChange={(e) => setTechName(e.target.value)} />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="techEmail">Email</Label>
-                                                    <Input id="techEmail" type="email" value={techEmail} onChange={(e) => setTechEmail(e.target.value)} />
-                                                </div>
-                                            </div>
-                                            <DialogFooter>
-                                                <DialogClose asChild><Button variant="secondary">Cancel</Button></DialogClose>
-                                                <Button onClick={handleAddTechnician}>Add Technician</Button>
-                                            </DialogFooter>
+                                            <Tabs defaultValue="single" className="pt-4">
+                                                <TabsList className="grid w-full grid-cols-2">
+                                                    <TabsTrigger value="single"><UserPlus className="mr-2 h-4 w-4" /> Add Single</TabsTrigger>
+                                                    <TabsTrigger value="bulk"><ClipboardPaste className="mr-2 h-4 w-4" /> Bulk Add</TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="single">
+                                                    <div className="space-y-4 py-4">
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="techName">Full Name</Label>
+                                                            <Input id="techName" value={techName} onChange={(e) => setTechName(e.target.value)} />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="techEmail">Email</Label>
+                                                            <Input id="techEmail" type="email" value={techEmail} onChange={(e) => setTechEmail(e.target.value)} />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="techPhone">Phone (Optional)</Label>
+                                                            <Input id="techPhone" type="tel" value={techPhone} onChange={(e) => setTechPhone(e.target.value)} />
+                                                        </div>
+                                                    </div>
+                                                    <DialogFooter>
+                                                        <DialogClose asChild><Button variant="secondary">Cancel</Button></DialogClose>
+                                                        <Button onClick={handleAddTechnician}>Add Technician</Button>
+                                                    </DialogFooter>
+                                                </TabsContent>
+                                                <TabsContent value="bulk">
+                                                    <div className="space-y-4 py-4">
+                                                        <Label htmlFor="bulk-add">Paste a list of "Name, Email, Phone" values, one per line.</Label>
+                                                        <Textarea 
+                                                            id="bulk-add" 
+                                                            value={bulkText}
+                                                            onChange={(e) => setBulkText(e.target.value)}
+                                                            placeholder="John Doe,john@example.com,123-456-7890"
+                                                            rows={5}
+                                                        />
+                                                        <p className="text-xs text-muted-foreground">
+                                                            Each line should contain the name, email, and optionally a phone number, separated by commas.
+                                                        </p>
+                                                    </div>
+                                                    <DialogFooter>
+                                                        <DialogClose asChild><Button variant="secondary">Cancel</Button></DialogClose>
+                                                        <Button onClick={handleBulkAddFromText}>Add Technicians</Button>
+                                                    </DialogFooter>
+                                                </TabsContent>
+                                            </Tabs>
                                         </DialogContent>
                                     </Dialog>
                                 </div>
@@ -373,6 +489,7 @@ export default function TechniciansPage() {
                                                 <div key={tech.id} className="flex flex-col gap-2 rounded-md border p-3 bg-secondary/50">
                                                     <Input value={editedTechName} onChange={e => setEditedTechName(e.target.value)} placeholder="Full Name" />
                                                     <Input type="email" value={editedTechEmail} onChange={e => setEditedTechEmail(e.target.value)} placeholder="Email"/>
+                                                    <Input type="tel" value={editedTechPhone} onChange={e => setEditedTechPhone(e.target.value)} placeholder="Phone (Optional)"/>
                                                     <div className="flex justify-end gap-2 mt-1">
                                                         <Button variant="ghost" size="icon" onClick={() => setEditingTechnician(null)}><X className="h-4 w-4" /></Button>
                                                         <Button variant="ghost" size="icon" onClick={() => handleUpdateTechnician(tech)}><Check className="h-4 w-4" /></Button>
@@ -383,6 +500,11 @@ export default function TechniciansPage() {
                                                     <div>
                                                         <p className="font-medium">{tech.name}</p>
                                                         <p className="text-sm text-muted-foreground">{tech.email}</p>
+                                                        {tech.phone && (
+                                                            <p className="text-sm text-muted-foreground flex items-center gap-2">
+                                                                <Phone className="h-3 w-3"/> {tech.phone}
+                                                            </p>
+                                                         )}
                                                     </div>
                                                     <div className="flex gap-1">
                                                         <Button variant="ghost" size="icon" onClick={() => showQrCodeDialog(tech.name, tech.email, tech.password || '')}>
@@ -391,7 +513,7 @@ export default function TechniciansPage() {
                                                         <Button variant="ghost" size="icon" onClick={() => handleResetPassword(tech)}>
                                                             <KeyRound className="h-4 w-4" />
                                                         </Button>
-                                                        <Button variant="ghost" size="icon" onClick={() => { setEditingTechnician(tech); setEditedTechName(tech.name); setEditedTechEmail(tech.email); }}>
+                                                        <Button variant="ghost" size="icon" onClick={() => { setEditingTechnician(tech); setEditedTechName(tech.name); setEditedTechEmail(tech.email); setEditedTechPhone(tech.phone || ''); }}>
                                                             <Pencil className="h-4 w-4" />
                                                         </Button>
                                                         <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDeleteTechnician(tech.id)}>
@@ -437,3 +559,5 @@ export default function TechniciansPage() {
         </div>
     )
 }
+
+    
