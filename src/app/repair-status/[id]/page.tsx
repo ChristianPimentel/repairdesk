@@ -16,7 +16,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { Wrench, CheckCircle, Package, Hourglass, Archive, User } from 'lucide-react';
+import { Wrench, CheckCircle, Package, Hourglass, Archive, User, Link as LinkIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const getStatusInfo = (status: string) => {
@@ -159,7 +159,7 @@ export default function RepairStatusPage() {
                             </div>
                             
                             <div className="space-y-2">
-                                <h4 className="font-semibold flex items-center gap-2"><Wrench className="h-4 w-4" /> Serviced By</h4>
+                                <h4 className="font-semibold flex items-center gap-2"><User className="h-4 w-4" /> Serviced By</h4>
                                 <p className="text-muted-foreground">{technicianName}</p>
                             </div>
                              
@@ -180,6 +180,26 @@ export default function RepairStatusPage() {
                                     )}
                                 </ul>
                             </div>
+                            
+                            {(repair.linkURLs && repair.linkURLs.length > 0) && (
+                                <div className="space-y-2">
+                                <h4 className="font-semibold flex items-center gap-2"><LinkIcon className="h-4 w-4" /> Associated Links</h4>
+                                <div className="space-y-1">
+                                    {repair.linkURLs.map((url, index) => (
+                                        <a 
+                                            key={index}
+                                            href={url} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="flex text-sm text-primary hover:underline break-all"
+                                        >
+                                            {url}
+                                        </a>
+                                    ))}
+                                </div>
+                                </div>
+                            )}
+
                         </div>
                     )}
                 </CardContent>
@@ -187,4 +207,3 @@ export default function RepairStatusPage() {
         </main>
     );
 }
-
