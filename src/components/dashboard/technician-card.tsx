@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -33,6 +33,10 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import Image from 'next/image';
+import { Combobox } from '../ui/combobox';
+import { Command, CommandGroup, CommandItem, CommandList } from '../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { ChevronsUpDown } from 'lucide-react';
 
 interface TechnicianCardProps {
   technicians: Technician[];
@@ -43,10 +47,12 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [group, setGroup] = useState('');
   const [editingTechnician, setEditingTechnician] = useState<Technician | null>(null);
   const [editedName, setEditedName] = useState('');
   const [editedEmail, setEditedEmail] = useState('');
   const [editedPhone, setEditedPhone] = useState('');
+  const [editedGroup, setEditedGroup] = useState('');
   const [bulkText, setBulkText] = useState('');
   
   const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
@@ -54,6 +60,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
   const [currentTechnicianInfo, setCurrentTechnicianInfo] = useState<{name: string, pass: string} | null>(null);
 
   const [isAddTechnicianDialogOpen, setIsAddTechnicianDialogOpen] = useState(false);
+  const [openGroupPopover, setOpenGroupPopover] = useState(false);
 
 
   const { toast } = useToast();
@@ -99,6 +106,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
       name,
       email: email.toLowerCase(),
       phone,
+      group: group || 'Default',
       password: tempPassword,
       forcePasswordChange: true,
     };
@@ -110,6 +118,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
         setName('');
         setEmail('');
         setPhone('');
+        setGroup('');
     } catch (error) {
         console.error("Error adding technician: ", error);
         toast({ title: 'Error', description: 'Could not add technician.', variant: 'destructive'});
@@ -135,6 +144,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
     setEditedName(technician.name);
     setEditedEmail(technician.email);
     setEditedPhone(technician.phone || '');
+    setEditedGroup(technician.group || 'Default');
   };
   
   const handleCancelEdit = () => {
@@ -142,6 +152,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
     setEditedName('');
     setEditedEmail('');
     setEditedPhone('');
+    setEditedGroup('');
   };
 
   const handleUpdateTechnician = async () => {
@@ -166,7 +177,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
 
     try {
         const techRef = doc(db, 'technicians', editingTechnician.id);
-        await updateDoc(techRef, { name: editedName, email: editedEmail.toLowerCase(), phone: editedPhone });
+        await updateDoc(techRef, { name: editedName, email: editedEmail.toLowerCase(), phone: editedPhone, group: editedGroup });
         toast({
             title: 'Technician Updated',
             description: `The technician's details have been updated.`,
@@ -212,6 +223,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
             const name = parts[0];
             const email = parts[1];
             const phone = parts[2] || '';
+            const groupName = parts[3] || 'Default';
             
             if (name && email) {
                 if (!existingEmails.has(email.toLowerCase())) {
@@ -220,6 +232,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
                         name,
                         email: email.toLowerCase(),
                         phone,
+                        group: groupName,
                         password: tempPassword,
                         forcePasswordChange: true,
                     };
@@ -261,6 +274,11 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
     setBulkText('');
   };
 
+  const groupOptions = useMemo(() => {
+    const groups = new Set(technicians.map(t => t.group || 'Default'));
+    return Array.from(groups).map(g => ({ value: g, label: g }));
+  }, [technicians]);
+
 
   return (
     <div className="space-y-6">
@@ -298,6 +316,50 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
                                     <Label htmlFor="techPhone">Phone (Optional)</Label>
                                     <Input id="techPhone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g., 123-456-7890" />
                                 </div>
+                                <div className="space-y-2">
+                                    <Label>Group</Label>
+                                    <Popover open={openGroupPopover} onOpenChange={setOpenGroupPopover}>
+                                        <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            role="combobox"
+                                            aria-expanded={openGroupPopover}
+                                            className="w-full justify-between"
+                                        >
+                                            {group || "Select group..."}
+                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                            <Command>
+                                                <Input 
+                                                    placeholder="Create or select group"
+                                                    value={group}
+                                                    onChange={(e) => setGroup(e.target.value)}
+                                                />
+                                                <CommandList>
+                                                    <CommandGroup>
+                                                        {groupOptions.map((option) => (
+                                                        <CommandItem
+                                                            key={option.value}
+                                                            value={option.value}
+                                                            onSelect={(currentValue) => {
+                                                                setGroup(currentValue === group ? "" : currentValue);
+                                                                setOpenGroupPopover(false);
+                                                            }}
+                                                        >
+                                                            <Check
+                                                                className={`mr-2 h-4 w-4 ${group === option.value ? "opacity-100" : "opacity-0"}`}
+                                                            />
+                                                            {option.label}
+                                                        </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
                             </div>
                             <DialogFooter>
                                 <DialogClose asChild>
@@ -310,16 +372,16 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
                         </TabsContent>
                         <TabsContent value="bulk">
                             <div className="space-y-4 py-4">
-                                <Label htmlFor="bulk-add">Paste a list of "Name, Email, Phone" values, one per line.</Label>
+                                <Label htmlFor="bulk-add">Paste a list of "Name, Email, Phone, Group" values, one per line.</Label>
                                 <Textarea 
                                     id="bulk-add" 
                                     value={bulkText}
                                     onChange={(e) => setBulkText(e.target.value)}
-                                    placeholder="John Doe,john@example.com,123-456-7890\nJane Smith,jane@example.com"
+                                    placeholder="John Doe,john@example.com,123-456-7890,Hardware Team"
                                     rows={5}
                                 />
                                 <p className="text-xs text-muted-foreground">
-                                    Each line should contain the name, email, and optionally a phone number, separated by commas.
+                                    Each line should contain the name, email, optionally a phone number, and optionally a group, separated by commas.
                                 </p>
                             </div>
                             <DialogFooter>
@@ -347,6 +409,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
                                 <Input value={editedName} onChange={e => setEditedName(e.target.value)} placeholder="Full Name" />
                                 <Input type="email" value={editedEmail} onChange={e => setEditedEmail(e.target.value)} placeholder="Email"/>
                                 <Input type="tel" value={editedPhone} onChange={e => setEditedPhone(e.target.value)} placeholder="Phone (Optional)"/>
+                                <Input value={editedGroup} onChange={e => setEditedGroup(e.target.value)} placeholder="Group" />
 
                                 <div className="flex justify-end gap-2 mt-1">
                                     <Button variant="ghost" size="icon" onClick={handleCancelEdit}><X className="h-4 w-4" /></Button>
@@ -358,6 +421,7 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
                                 <div>
                                     <p className="font-medium">{tech.name}</p>
                                     <p className="text-sm text-muted-foreground">{tech.email}</p>
+                                    <p className="text-xs text-muted-foreground italic">{tech.group || 'Default'}</p>
                                     {tech.phone && user?.role === 'Admin' ? (
                                         <a href={`tel:${tech.phone}`} className='flex items-center gap-2 text-sm text-primary hover:underline'>
                                             <Phone className="h-3 w-3"/> {tech.phone}
@@ -419,5 +483,3 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
       </div>
   );
 }
-
-    

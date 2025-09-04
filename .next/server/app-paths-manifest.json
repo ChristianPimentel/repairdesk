@@ -1,5 +1,6 @@
 {
   "/dashboard/admins/page": "app/dashboard/admins/page.js",
+  "/dashboard/archive/page": "app/dashboard/archive/page.js",
   "/dashboard/customers/page": "app/dashboard/customers/page.js",
   "/dashboard/edit-repair/[id]/page": "app/dashboard/edit-repair/[id]/page.js",
   "/dashboard/page": "app/dashboard/page.js",

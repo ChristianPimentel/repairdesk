@@ -36,6 +36,7 @@ export type Technician = {
   phone?: string;
   password?: string;
   forcePasswordChange?: boolean;
+  group?: string;
 };
 
 export type Admin = {
