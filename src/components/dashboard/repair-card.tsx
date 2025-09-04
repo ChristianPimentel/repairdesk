@@ -37,6 +37,7 @@ import {
   Keyboard,
   Link,
   ClipboardList,
+  Trash2,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import {
@@ -125,7 +126,7 @@ export function RepairCard({
   const [problemNotes, setProblemNotes] = useState('');
   const [observationNotes, setObservationNotes] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
-  const [linkURL, setLinkURL] = useState('');
+  const [linkURLs, setLinkURLs] = useState(['']);
   const signatureRef = useRef<SignaturePadRef>(null);
   const [typedSignature, setTypedSignature] = useState('');
   const [isAddBrandOpen, setIsAddBrandOpen] = useState(false);
@@ -147,7 +148,17 @@ export function RepairCard({
         setProblemNotes(existingRepair.problemNotes);
         setObservationNotes(existingRepair.observationNotes ?? '');
         setAssignedTo(existingRepair.assignedToName);
-        setLinkURL(existingRepair.linkURL ?? '');
+        if (existingRepair.linkURLs && existingRepair.linkURLs.length > 0) {
+            setLinkURLs(existingRepair.linkURLs);
+        } else {
+            // @ts-ignore - backward compatibility for old linkURL field
+            if (existingRepair.linkURL) {
+                 // @ts-ignore
+                setLinkURLs([existingRepair.linkURL]);
+            } else {
+                setLinkURLs(['']);
+            }
+        }
         if (typeof existingRepair.signature === 'string') {
             setTypedSignature(existingRepair.signature);
         }
@@ -173,7 +184,7 @@ export function RepairCard({
     setAccessories([]);
     setProblemNotes('');
     setObservationNotes('');
-    setLinkURL('');
+    setLinkURLs(['']);
     if (user?.role === 'Admin') {
         setAssignedTo('To Be Determined');
     } else if (user?.role === 'Student') {
@@ -251,7 +262,7 @@ export function RepairCard({
         status: existingRepair?.status || 'Pending' as const,
         signature: signatureData || existingRepair?.signature || null,
         assignedToName: assignedTo,
-        linkURL: linkURL,
+        linkURLs: linkURLs.filter(url => url.trim() !== ''),
     };
     
     onCreateRepair(newRepair);
@@ -298,6 +309,25 @@ export function RepairCard({
         description: `"${newAccessory.trim()}" already exists.`,
         variant: 'destructive',
       });
+    }
+  };
+
+  const handleLinkChange = (index: number, value: string) => {
+    const newLinks = [...linkURLs];
+    newLinks[index] = value;
+    setLinkURLs(newLinks);
+  };
+
+  const addLinkInput = () => {
+    setLinkURLs([...linkURLs, '']);
+  };
+
+  const removeLinkInput = (index: number) => {
+    const newLinks = linkURLs.filter((_, i) => i !== index);
+    if (newLinks.length === 0) {
+        setLinkURLs(['']); // Always keep at least one input
+    } else {
+        setLinkURLs(newLinks);
     }
   };
 
@@ -460,16 +490,35 @@ export function RepairCard({
         </div>
 
         <div className="space-y-2">
-            <Label htmlFor="linkUrl">Associated Link (Optional)</Label>
-            <div className="relative">
-                <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                    id="linkUrl"
-                    placeholder="https://example.com/product-info"
-                    value={linkURL}
-                    onChange={(e) => setLinkURL(e.target.value)}
-                    className="pl-9"
-                />
+            <Label>Associated Links (Optional)</Label>
+            <div className="space-y-2">
+                {linkURLs.map((url, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                        <div className="relative w-full">
+                             <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                             <Input
+                                value={url}
+                                onChange={(e) => handleLinkChange(index, e.target.value)}
+                                placeholder="https://example.com/product-info"
+                                className="pl-9"
+                             />
+                        </div>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="shrink-0"
+                            onClick={() => removeLinkInput(index)}
+                            disabled={linkURLs.length === 1 && linkURLs[0] === ''}
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
+                ))}
+                <Button type="button" variant="outline" size="sm" onClick={addLinkInput}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Link
+                </Button>
             </div>
         </div>
 

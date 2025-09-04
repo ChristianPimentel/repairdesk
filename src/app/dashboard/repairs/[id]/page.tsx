@@ -413,19 +413,24 @@ export default function RepairDetailsPage() {
                         </ul>
                     </div>
 
-                    {repair.linkURL && (
+                    {(repair.linkURLs && repair.linkURLs.length > 0) && (
                       <>
                         <Separator />
                         <div>
-                          <h3 className="font-semibold mb-2 flex items-center gap-2"><LinkIcon className="h-4 w-4" />Associated Link</h3>
-                          <a 
-                            href={repair.linkURL} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-sm text-primary hover:underline break-all"
-                          >
-                            {repair.linkURL}
-                          </a>
+                          <h3 className="font-semibold mb-2 flex items-center gap-2"><LinkIcon className="h-4 w-4" />Associated Links</h3>
+                          <div className="space-y-2">
+                            {repair.linkURLs.map((url, index) => (
+                                <a 
+                                    key={index}
+                                    href={url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex text-sm text-primary hover:underline break-all"
+                                >
+                                    {url}
+                                </a>
+                            ))}
+                          </div>
                         </div>
                       </>
                     )}

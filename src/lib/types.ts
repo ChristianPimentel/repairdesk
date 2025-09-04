@@ -23,7 +23,7 @@ export type Repair = {
   status: RepairStatus;
   assignedToName: string;
   signature: string | null;
-  linkURL?: string;
+  linkURLs?: string[];
   createdAt: Date;
   readyAt: Date | null;
   archivedAt: Date | null;
