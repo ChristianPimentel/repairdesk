@@ -3,16 +3,16 @@
 
 import React, { useState, useMemo } from 'react';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from '@/components/ui/card';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, Check, X, FolderKanban, PlusCircle, UserPlus, KeyRound, QrCode, ClipboardPaste, Phone } from 'lucide-react';
+import { Pencil, Trash2, Check, X, FolderKanban, PlusCircle, UserPlus, KeyRound, QrCode, ClipboardPaste, Phone, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { db } from '@/lib/firebase';
@@ -44,7 +44,7 @@ import {
     DialogTrigger,
   } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
+import * as XLSX from 'xlsx';
 
 export default function TechniciansPage() {
     const { user, groups, technicians } = useUser();
@@ -59,7 +59,6 @@ export default function TechniciansPage() {
     const [techName, setTechName] = useState('');
     const [techEmail, setTechEmail] = useState('');
     const [techPhone, setTechPhone] = useState('');
-    const [bulkText, setBulkText] = useState('');
     const [editingTechnician, setEditingTechnician] = useState<Technician | null>(null);
     const [editedTechName, setEditedTechName] = useState('');
     const [editedTechEmail, setEditedTechEmail] = useState('');
@@ -195,65 +194,51 @@ export default function TechniciansPage() {
         }
     };
 
-    const handleBulkAddFromText = async () => {
-        if (!bulkText.trim()) {
-            toast({
-                title: 'No Input',
-                description: 'Please paste technician data into the text area.',
-                variant: 'destructive',
-            });
-            return;
-        }
-        
+    const processBulkAdd = async (data: any[][]) => {
         const addedTechnicians: {name: string, email: string, pass: string}[] = [];
         const duplicates: string[] = [];
         const existingEmails = new Set(technicians.map(t => t.email.toLowerCase()));
-        
-        const lines = bulkText.trim().split('\n');
-    
-        for (const line of lines) {
-            const parts = line.split(',').map(p => p.trim());
-            if (parts.length >= 2) {
-                const name = parts[0];
-                const email = parts[1];
-                const phone = parts[2] || '';
-                
-                if (name && email) {
-                    if (!existingEmails.has(email.toLowerCase())) {
-                        const tempPassword = generatePassword();
-                        const newTechnician = {
-                            name,
-                            email: email.toLowerCase(),
-                            phone,
-                            group: selectedGroup?.name || 'Default',
-                            password: tempPassword,
-                            forcePasswordChange: true,
-                        };
-                        try {
-                            await addDoc(collection(db, 'technicians'), newTechnician);
-                            addedTechnicians.push({ name, email, pass: tempPassword });
-                            existingEmails.add(email.toLowerCase());
-                        } catch (e) {
-                            // ignore failed adds
-                        }
-                    } else {
-                        duplicates.push(email);
+
+        for (const row of data) {
+            const name = row[0];
+            const email = row[1];
+            const phone = row[2] || '';
+
+            if (name && email && typeof email === 'string') {
+                if (!existingEmails.has(email.toLowerCase())) {
+                    const tempPassword = generatePassword();
+                    const newTechnician = {
+                        name,
+                        email: email.toLowerCase(),
+                        phone: String(phone),
+                        group: selectedGroup?.name || 'Default',
+                        password: tempPassword,
+                        forcePasswordChange: true,
+                    };
+                    try {
+                        await addDoc(collection(db, 'technicians'), newTechnician);
+                        addedTechnicians.push({ name, email, pass: tempPassword });
+                        existingEmails.add(email.toLowerCase());
+                    } catch (e) {
+                        // ignore failed adds
                     }
+                } else {
+                    duplicates.push(email);
                 }
             }
         }
-    
+
         if (addedTechnicians.length > 0) {
             setIsAddTechDialogOpen(false);
             const firstTech = addedTechnicians[0];
             showQrCodeDialog(firstTech.name, firstTech.email, firstTech.pass);
-    
+
             toast({
                 title: `${addedTechnicians.length} Technicians Added`,
                 description: `Showing QR for the first one. Others can be accessed from the list.`,
             });
         }
-    
+
         if (duplicates.length > 0) {
             toast({
                 title: 'Some Duplicates Skipped',
@@ -261,9 +246,27 @@ export default function TechniciansPage() {
                 variant: 'destructive',
             });
         }
-        
-        setBulkText('');
-      };
+    };
+
+    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = e.target?.result;
+            if (data) {
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const json: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                processBulkAdd(json.slice(1)); // Assuming first row is header
+            }
+        };
+        reader.readAsArrayBuffer(file);
+        event.target.value = ''; // Reset file input
+    };
+
 
     const handleDeleteTechnician = async (id: string) => {
         try {
@@ -450,23 +453,16 @@ export default function TechniciansPage() {
                                                     </DialogFooter>
                                                 </TabsContent>
                                                 <TabsContent value="bulk">
-                                                    <div className="space-y-4 py-4">
-                                                        <Label htmlFor="bulk-add">Paste a list of "Name, Email, Phone" values, one per line.</Label>
-                                                        <Textarea 
-                                                            id="bulk-add" 
-                                                            value={bulkText}
-                                                            onChange={(e) => setBulkText(e.target.value)}
-                                                            placeholder="John Doe,john@example.com,123-456-7890"
-                                                            rows={5}
-                                                        />
-                                                        <p className="text-xs text-muted-foreground">
-                                                            Each line should contain the name, email, and optionally a phone number, separated by commas.
-                                                        </p>
+                                                    <div className="space-y-4 py-4 text-center">
+                                                        <Label htmlFor="file-upload" className="cursor-pointer">
+                                                            <div className="border-2 border-dashed border-muted-foreground/50 rounded-lg p-8 hover:bg-muted/50">
+                                                                <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
+                                                                <p className="mt-2 text-sm text-muted-foreground">Click to upload an .xlsx file</p>
+                                                                <p className="text-xs text-muted-foreground">Columns: Name, Email, Phone</p>
+                                                            </div>
+                                                        </Label>
+                                                        <Input id="file-upload" type="file" className="hidden" accept=".xlsx" onChange={handleFileUpload} />
                                                     </div>
-                                                    <DialogFooter>
-                                                        <DialogClose asChild><Button variant="secondary">Cancel</Button></DialogClose>
-                                                        <Button onClick={handleBulkAddFromText}>Add Technicians</Button>
-                                                    </DialogFooter>
                                                 </TabsContent>
                                             </Tabs>
                                         </DialogContent>
@@ -559,5 +555,3 @@ export default function TechniciansPage() {
         </div>
     )
 }
-
-    
