@@ -52,6 +52,7 @@ import {
 import { MultiSelect, MultiSelectOption } from '../ui/multi-select';
 import { Combobox } from '../ui/combobox';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Checkbox } from '../ui/checkbox';
 
 
 interface RepairCardProps {
@@ -133,6 +134,7 @@ export function RepairCard({
   const [newBrand, setNewBrand] = useState('');
   const [isAddAccessoryOpen, setIsAddAccessoryOpen] = useState(false);
   const [newAccessory, setNewAccessory] = useState('');
+  const [customerIsPresent, setCustomerIsPresent] = useState(true);
 
   const { toast } = useToast();
   const isEditMode = !!existingRepair;
@@ -159,9 +161,13 @@ export function RepairCard({
                 setLinkURLs(['']);
             }
         }
-        if (typeof existingRepair.signature === 'string') {
+        if (typeof existingRepair.signature === 'string' && existingRepair.signature !== 'Customer Was Not Present') {
             setTypedSignature(existingRepair.signature);
         }
+        if (existingRepair.signature) {
+            setCustomerIsPresent(existingRepair.signature !== 'Customer Was Not Present');
+        }
+
     } else {
         if (preselectedCustomerId) setSelectedCustomerId(preselectedCustomerId);
         if (preselectedDeviceType) setDeviceType(preselectedDeviceType);
@@ -185,6 +191,7 @@ export function RepairCard({
     setProblemNotes('');
     setObservationNotes('');
     setLinkURLs(['']);
+    setCustomerIsPresent(true);
     if (user?.role === 'Admin') {
         setAssignedTo('To Be Determined');
     } else if (user?.role === 'Student') {
@@ -230,14 +237,19 @@ export function RepairCard({
         return;
     }
     
-    const signatureData = isMobile ? signatureRef.current?.getSignature() : typedSignature;
-    if(!signatureData && !isEditMode) {
-        toast({
-            title: 'Signature Required',
-            description: 'Please have the customer sign for liability.',
-            variant: 'destructive',
-        });
-        return;
+    let signatureData: string | null = null;
+    if (customerIsPresent) {
+      signatureData = isMobile ? signatureRef.current?.getSignature() : typedSignature;
+      if(!signatureData && !isEditMode) {
+          toast({
+              title: 'Signature Required',
+              description: 'Please have the customer sign for liability.',
+              variant: 'destructive',
+          });
+          return;
+      }
+    } else {
+      signatureData = "Customer Was Not Present";
     }
     
     if (!assignedTo) {
@@ -523,32 +535,53 @@ export function RepairCard({
         </div>
 
         <div className="space-y-2">
-          <Label>Customer Liability Signature</Label>
-          {isMobile ? (
-            <SignaturePad ref={signatureRef} width={500} height={200} />
-          ) : (
-            <div className="relative">
-              <Keyboard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Type full name to sign"
-                value={typedSignature}
-                onChange={(e) => setTypedSignature(e.target.value)}
-                className="pl-9 font-signature text-2xl h-12"
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="customer-present"
+                checked={customerIsPresent}
+                onCheckedChange={(checked) => setCustomerIsPresent(checked as boolean)}
                 disabled={isEditMode}
               />
+              <Label
+                htmlFor="customer-present"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Customer is Present
+              </Label>
             </div>
-          )}
         </div>
+
+        {customerIsPresent && (
+            <div className="space-y-2">
+              <Label>Customer Liability Signature</Label>
+              {isMobile ? (
+                <SignaturePad ref={signatureRef} width={500} height={200} />
+              ) : (
+                <div className="relative">
+                  <Keyboard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Type full name to sign"
+                    value={typedSignature}
+                    onChange={(e) => setTypedSignature(e.target.value)}
+                    className="pl-9 font-signature text-2xl h-12"
+                    disabled={isEditMode && typedSignature !== ''}
+                  />
+                </div>
+              )}
+            </div>
+        )}
       </CardContent>
       <CardFooter className="flex justify-between gap-2">
-        <Button variant="outline" onClick={() => {
-            if (isMobile) {
-                signatureRef.current?.clear()
-            } else {
-                setTypedSignature('')
-            }
-        }}
-        disabled={isEditMode && !isMobile}
+        <Button 
+            variant="outline" 
+            onClick={() => {
+                if (isMobile) {
+                    signatureRef.current?.clear()
+                } else {
+                    setTypedSignature('')
+                }
+            }}
+            disabled={!customerIsPresent || (isEditMode && !isMobile)}
         >
           Clear Signature
         </Button>
