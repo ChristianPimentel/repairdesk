@@ -1,4 +1,5 @@
 
+
 export type Customer = {
   id: string;
   fullName: string;
@@ -36,7 +37,7 @@ export type Technician = {
   phone?: string;
   password?: string;
   forcePasswordChange?: boolean;
-  group?: string;
+  group?: string; // This will be the group NAME, not ID
 };
 
 export type Admin = {
@@ -64,3 +65,9 @@ export type Donation = {
   donatedAt: Date;
   receivedBy: string;
 };
+
+export type Group = {
+    id: string;
+    name: string;
+}
+

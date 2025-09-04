@@ -1,8 +1,9 @@
 
+
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
-import type { User, Technician, Repair, Customer, Donation, Admin } from '@/lib/types';
+import type { User, Technician, Repair, Customer, Donation, Admin, Group } from '@/lib/types';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
@@ -18,6 +19,7 @@ interface UserContextType {
   donations: Donation[];
   admins: Admin[];
   assignableUsers: { id: string; name: string }[];
+  groups: Group[];
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -30,6 +32,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [donations, setDonations] = useState<Donation[]>([]);
   const [admins, setAdmins] = useState<Admin[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+
 
   useEffect(() => {
     setLoading(true);
@@ -48,6 +52,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const customersQuery = query(collection(db, 'customers'), orderBy('fullName'));
     const donationsQuery = query(collection(db, 'donations'), orderBy('donatedAt', 'desc'));
     const adminsQuery = query(collection(db, 'admins'), orderBy('name'));
+    const groupsQuery = query(collection(db, 'groups'), orderBy('name'));
 
     
     const unsubTechnicians = onSnapshot(techniciansQuery, (snapshot) => {
@@ -98,6 +103,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setAdmins(adminsData);
     });
 
+    const unsubGroups = onSnapshot(groupsQuery, (snapshot) => {
+        const groupsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Group));
+        setGroups(groupsData);
+    });
+
+
     setLoading(false);
 
     // Cleanup function
@@ -107,6 +118,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         unsubCustomers();
         unsubDonations();
         unsubAdmins();
+        unsubGroups();
     };
 
   }, []);
@@ -131,7 +143,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, loading, login, logout, technicians, repairs, setRepairs, customers, donations, admins, assignableUsers }}>
+    <UserContext.Provider value={{ user, loading, login, logout, technicians, repairs, setRepairs, customers, donations, admins, assignableUsers, groups }}>
       {children}
     </UserContext.Provider>
   );

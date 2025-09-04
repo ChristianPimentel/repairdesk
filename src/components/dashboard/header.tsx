@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import {
@@ -9,6 +10,7 @@ import {
   Archive,
   Gift,
   Shield,
+  FolderKanban,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -54,6 +56,7 @@ export function Header() {
 
   if (user?.role === 'Admin') {
     navLinks.splice(1, 0, { href: '/dashboard/admins', label: 'Admins', icon: Shield });
+    navLinks.splice(2, 0, { href: '/dashboard/groups', label: 'Groups', icon: FolderKanban });
     navLinks.splice(3, 0, { href: '/dashboard/technicians', label: 'Technicians', icon: Users });
     navLinks.push({ href: '/dashboard/donations', label: 'Donations', icon: Gift });
   }

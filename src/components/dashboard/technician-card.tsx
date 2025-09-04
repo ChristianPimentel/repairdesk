@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -33,17 +34,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import Image from 'next/image';
-import { Combobox } from '../ui/combobox';
-import { Command, CommandGroup, CommandItem, CommandList } from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { ChevronsUpDown } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface TechnicianCardProps {
   technicians: Technician[];
 }
 
 export function TechnicianCard({ technicians }: TechnicianCardProps) {
-  const { user } = useUser();
+  const { user, groups } = useUser();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -60,7 +58,6 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
   const [currentTechnicianInfo, setCurrentTechnicianInfo] = useState<{name: string, pass: string} | null>(null);
 
   const [isAddTechnicianDialogOpen, setIsAddTechnicianDialogOpen] = useState(false);
-  const [openGroupPopover, setOpenGroupPopover] = useState(false);
 
 
   const { toast } = useToast();
@@ -273,12 +270,10 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
     
     setBulkText('');
   };
-
+  
   const groupOptions = useMemo(() => {
-    const groups = new Set(technicians.map(t => t.group || 'Default'));
-    return Array.from(groups).map(g => ({ value: g, label: g }));
-  }, [technicians]);
-
+    return groups.map(g => ({ value: g.name, label: g.name }));
+  }, [groups]);
 
   return (
     <div className="space-y-6">
@@ -318,47 +313,19 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Group</Label>
-                                    <Popover open={openGroupPopover} onOpenChange={setOpenGroupPopover}>
-                                        <PopoverTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            aria-expanded={openGroupPopover}
-                                            className="w-full justify-between"
-                                        >
-                                            {group || "Select group..."}
-                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                        </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                                            <Command>
-                                                <Input 
-                                                    placeholder="Create or select group"
-                                                    value={group}
-                                                    onChange={(e) => setGroup(e.target.value)}
-                                                />
-                                                <CommandList>
-                                                    <CommandGroup>
-                                                        {groupOptions.map((option) => (
-                                                        <CommandItem
-                                                            key={option.value}
-                                                            value={option.value}
-                                                            onSelect={(currentValue) => {
-                                                                setGroup(currentValue === group ? "" : currentValue);
-                                                                setOpenGroupPopover(false);
-                                                            }}
-                                                        >
-                                                            <Check
-                                                                className={`mr-2 h-4 w-4 ${group === option.value ? "opacity-100" : "opacity-0"}`}
-                                                            />
-                                                            {option.label}
-                                                        </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
+                                    <Select value={group} onValueChange={setGroup}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a group" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Default">Default</SelectItem>
+                                            {groupOptions.map(option => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                             <DialogFooter>
@@ -409,7 +376,19 @@ export function TechnicianCard({ technicians }: TechnicianCardProps) {
                                 <Input value={editedName} onChange={e => setEditedName(e.target.value)} placeholder="Full Name" />
                                 <Input type="email" value={editedEmail} onChange={e => setEditedEmail(e.target.value)} placeholder="Email"/>
                                 <Input type="tel" value={editedPhone} onChange={e => setEditedPhone(e.target.value)} placeholder="Phone (Optional)"/>
-                                <Input value={editedGroup} onChange={e => setEditedGroup(e.target.value)} placeholder="Group" />
+                                <Select value={editedGroup} onValueChange={setEditedGroup}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a group" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Default">Default</SelectItem>
+                                        {groupOptions.map(option => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
 
                                 <div className="flex justify-end gap-2 mt-1">
                                     <Button variant="ghost" size="icon" onClick={handleCancelEdit}><X className="h-4 w-4" /></Button>
