@@ -1,14 +1,4 @@
 {
-  "/change-password/page": "app/change-password/page.js",
-  "/dashboard/admins/page": "app/dashboard/admins/page.js",
-  "/dashboard/archive/page": "app/dashboard/archive/page.js",
-  "/dashboard/customers/page": "app/dashboard/customers/page.js",
-  "/dashboard/edit-repair/[id]/page": "app/dashboard/edit-repair/[id]/page.js",
-  "/dashboard/groups/page": "app/dashboard/groups/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/repairs/[id]/page": "app/dashboard/repairs/[id]/page.js",
   "/dashboard/technicians/page": "app/dashboard/technicians/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js",
-  "/repair-status/[id]/page": "app/repair-status/[id]/page.js"
+  "/page": "app/page.js"
 }

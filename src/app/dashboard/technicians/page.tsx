@@ -45,6 +45,7 @@ import {
   } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import * as XLSX from 'xlsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function TechniciansPage() {
     const { user, groups, technicians } = useUser();
@@ -63,6 +64,7 @@ export default function TechniciansPage() {
     const [editedTechName, setEditedTechName] = useState('');
     const [editedTechEmail, setEditedTechEmail] = useState('');
     const [editedTechPhone, setEditedTechPhone] = useState('');
+    const [editedTechGroup, setEditedTechGroup] = useState('');
     const [isAddTechDialogOpen, setIsAddTechDialogOpen] = useState(false);
 
     // QR Code Dialog State
@@ -77,6 +79,8 @@ export default function TechniciansPage() {
         if (!selectedGroup) return [];
         return technicians.filter(t => (t.group || 'Default') === selectedGroup.name);
     }, [technicians, selectedGroup]);
+    
+    const allGroups = useMemo(() => [{id: 'default', name: 'Default'}, ...groups], [groups]);
 
     // Group Management Functions
     const handleAddGroup = async () => {
@@ -113,7 +117,7 @@ export default function TechniciansPage() {
             batch.delete(groupRef);
             await batch.commit();
             toast({ title: 'Group Deleted', description: `The group "${group.name}" has been removed.`, variant: 'destructive' });
-            setSelectedGroup(null);
+            setSelectedGroup(allGroups.find(g => g.name === 'Default') || null);
         } catch (error) {
             toast({ title: 'Error', description: 'Could not remove group.', variant: 'destructive' });
         }
@@ -288,7 +292,12 @@ export default function TechniciansPage() {
         }
         try {
             const techRef = doc(db, 'technicians', technician.id);
-            await updateDoc(techRef, { name: editedTechName, email: editedTechEmail.toLowerCase(), phone: editedTechPhone });
+            await updateDoc(techRef, { 
+                name: editedTechName, 
+                email: editedTechEmail.toLowerCase(), 
+                phone: editedTechPhone,
+                group: editedTechGroup
+            });
             toast({ title: 'Technician Updated', description: "The technician's details have been updated." });
             setEditingTechnician(null);
         } catch (error) {
@@ -318,8 +327,6 @@ export default function TechniciansPage() {
             </div>
         )
     }
-    
-    const allGroups = [{id: 'default', name: 'Default'}, ...groups];
 
     return (
         <div className="p-4 sm:p-6 lg:p-8">
@@ -486,6 +493,16 @@ export default function TechniciansPage() {
                                                     <Input value={editedTechName} onChange={e => setEditedTechName(e.target.value)} placeholder="Full Name" />
                                                     <Input type="email" value={editedTechEmail} onChange={e => setEditedTechEmail(e.target.value)} placeholder="Email"/>
                                                     <Input type="tel" value={editedTechPhone} onChange={e => setEditedTechPhone(e.target.value)} placeholder="Phone (Optional)"/>
+                                                    <Select value={editedTechGroup} onValueChange={setEditedTechGroup}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a group" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {allGroups.map(g => (
+                                                                <SelectItem key={g.id} value={g.name}>{g.name}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
                                                     <div className="flex justify-end gap-2 mt-1">
                                                         <Button variant="ghost" size="icon" onClick={() => setEditingTechnician(null)}><X className="h-4 w-4" /></Button>
                                                         <Button variant="ghost" size="icon" onClick={() => handleUpdateTechnician(tech)}><Check className="h-4 w-4" /></Button>
@@ -509,7 +526,7 @@ export default function TechniciansPage() {
                                                         <Button variant="ghost" size="icon" onClick={() => handleResetPassword(tech)}>
                                                             <KeyRound className="h-4 w-4" />
                                                         </Button>
-                                                        <Button variant="ghost" size="icon" onClick={() => { setEditingTechnician(tech); setEditedTechName(tech.name); setEditedTechEmail(tech.email); setEditedTechPhone(tech.phone || ''); }}>
+                                                        <Button variant="ghost" size="icon" onClick={() => { setEditingTechnician(tech); setEditedTechName(tech.name); setEditedTechEmail(tech.email); setEditedTechPhone(tech.phone || ''); setEditedTechGroup(tech.group || 'Default'); }}>
                                                             <Pencil className="h-4 w-4" />
                                                         </Button>
                                                         <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDeleteTechnician(tech.id)}>
