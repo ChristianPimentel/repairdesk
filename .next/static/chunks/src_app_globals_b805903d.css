@@ -688,6 +688,10 @@ body {
   height: 100svh;
 }
 
+.h-\[24rem\] {
+  height: 24rem;
+}
+
 .max-h-72 {
   max-height: 18rem;
 }

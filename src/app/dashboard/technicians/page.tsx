@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, Check, X, FolderKanban, PlusCircle, UserPlus, KeyRound, QrCode, ClipboardPaste, Phone, Upload } from 'lucide-react';
+import { Pencil, Trash2, Check, X, FolderKanban, PlusCircle, UserPlus, KeyRound, QrCode, ClipboardPaste, Phone, Upload, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { db } from '@/lib/firebase';
@@ -46,6 +46,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import * as XLSX from 'xlsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function TechniciansPage() {
     const { user, groups, technicians } = useUser();
@@ -66,6 +67,12 @@ export default function TechniciansPage() {
     const [editedTechPhone, setEditedTechPhone] = useState('');
     const [editedTechGroup, setEditedTechGroup] = useState('');
     const [isAddTechDialogOpen, setIsAddTechDialogOpen] = useState(false);
+
+    // Bulk Actions State
+    const [selectedTechnicians, setSelectedTechnicians] = useState<string[]>([]);
+    const [isChangeGroupOpen, setIsChangeGroupOpen] = useState(false);
+    const [targetGroupId, setTargetGroupId] = useState('');
+
 
     // QR Code Dialog State
     const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
@@ -316,6 +323,77 @@ export default function TechniciansPage() {
         }
     }
 
+    // Bulk Action Handlers
+    const handleToggleSelectAll = () => {
+        if (selectedTechnicians.length === filteredTechnicians.length) {
+            setSelectedTechnicians([]);
+        } else {
+            setSelectedTechnicians(filteredTechnicians.map(t => t.id));
+        }
+    };
+
+    const handleToggleSelectTechnician = (techId: string) => {
+        setSelectedTechnicians(prev => 
+            prev.includes(techId)
+                ? prev.filter(id => id !== techId)
+                : [...prev, techId]
+        );
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedTechnicians.length === 0) return;
+        const batch = writeBatch(db);
+        selectedTechnicians.forEach(id => {
+            batch.delete(doc(db, 'technicians', id));
+        });
+        try {
+            await batch.commit();
+            toast({ title: 'Success', description: `${selectedTechnicians.length} technician(s) deleted.` });
+            setSelectedTechnicians([]);
+        } catch (error) {
+            toast({ title: 'Error', description: 'Could not delete technicians.', variant: 'destructive' });
+        }
+    };
+
+    const handleBulkResetPasswords = async () => {
+        if (selectedTechnicians.length === 0) return;
+        const batch = writeBatch(db);
+        selectedTechnicians.forEach(id => {
+            const newPassword = generatePassword();
+            batch.update(doc(db, 'technicians', id), {
+                password: newPassword,
+                forcePasswordChange: true
+            });
+        });
+        try {
+            await batch.commit();
+            toast({ title: 'Success', description: `Passwords for ${selectedTechnicians.length} technician(s) have been reset.` });
+            setSelectedTechnicians([]);
+        } catch (error) {
+            toast({ title: 'Error', description: 'Could not reset passwords.', variant: 'destructive' });
+        }
+    };
+
+    const handleBulkChangeGroup = async () => {
+        if (selectedTechnicians.length === 0 || !targetGroupId) return;
+        const targetGroup = allGroups.find(g => g.id === targetGroupId);
+        if (!targetGroup) return;
+
+        const batch = writeBatch(db);
+        selectedTechnicians.forEach(id => {
+            batch.update(doc(db, 'technicians', id), { group: targetGroup.name });
+        });
+        try {
+            await batch.commit();
+            toast({ title: 'Success', description: `${selectedTechnicians.length} technician(s) moved to ${targetGroup.name}.` });
+            setSelectedTechnicians([]);
+            setIsChangeGroupOpen(false);
+            setTargetGroupId('');
+        } catch (error) {
+            toast({ title: 'Error', description: 'Could not change group for technicians.', variant: 'destructive' });
+        }
+    };
+
 
     if (user?.role !== 'Admin') {
         return (
@@ -371,7 +449,7 @@ export default function TechniciansPage() {
                                                 "flex items-center justify-between rounded-md border p-3 cursor-pointer hover:bg-muted/50 transition-colors",
                                                 selectedGroup?.id === group.id && "bg-muted"
                                             )}
-                                            onClick={() => setSelectedGroup(group)}
+                                            onClick={() => {setSelectedGroup(group); setSelectedTechnicians([]);}}
                                         >
                                             <div className='flex items-center gap-2'>
                                                 <FolderKanban className="h-4 w-4 text-muted-foreground"/>
@@ -437,7 +515,7 @@ export default function TechniciansPage() {
                                             <Tabs defaultValue="single" className="pt-4">
                                                 <TabsList className="grid w-full grid-cols-2">
                                                     <TabsTrigger value="single"><UserPlus className="mr-2 h-4 w-4" /> Add Single</TabsTrigger>
-                                                    <TabsTrigger value="bulk"><ClipboardPaste className="mr-2 h-4 w-4" /> Bulk Add</TabsTrigger>
+                                                    <TabsTrigger value="bulk"><Upload className="mr-2 h-4 w-4" /> Bulk Add</TabsTrigger>
                                                 </TabsList>
                                                 <TabsContent value="single">
                                                     <div className="space-y-4 py-4">
@@ -480,65 +558,121 @@ export default function TechniciansPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ScrollArea className="h-[28.5rem] rounded-md border">
-                                    <div className="p-4 space-y-2">
-                                    {!selectedGroup ? (
-                                        <p className="text-center text-muted-foreground py-10">Select a group from the list.</p>
-                                    ) : filteredTechnicians.length === 0 ? (
-                                        <p className="text-center text-muted-foreground py-10">No technicians in this group.</p>
-                                    ) : (
-                                        filteredTechnicians.map((tech) => (
-                                            editingTechnician?.id === tech.id ? (
-                                                <div key={tech.id} className="flex flex-col gap-2 rounded-md border p-3 bg-secondary/50">
-                                                    <Input value={editedTechName} onChange={e => setEditedTechName(e.target.value)} placeholder="Full Name" />
-                                                    <Input type="email" value={editedTechEmail} onChange={e => setEditedTechEmail(e.target.value)} placeholder="Email"/>
-                                                    <Input type="tel" value={editedTechPhone} onChange={e => setEditedTechPhone(e.target.value)} placeholder="Phone (Optional)"/>
-                                                    <Select value={editedTechGroup} onValueChange={setEditedTechGroup}>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select a group" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {allGroups.map(g => (
-                                                                <SelectItem key={g.id} value={g.name}>{g.name}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <div className="flex justify-end gap-2 mt-1">
-                                                        <Button variant="ghost" size="icon" onClick={() => setEditingTechnician(null)}><X className="h-4 w-4" /></Button>
-                                                        <Button variant="ghost" size="icon" onClick={() => handleUpdateTechnician(tech)}><Check className="h-4 w-4" /></Button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div key={tech.id} className="flex items-center justify-between rounded-md border p-3">
-                                                    <div>
-                                                        <p className="font-medium">{tech.name}</p>
-                                                        <p className="text-sm text-muted-foreground">{tech.email}</p>
-                                                        {tech.phone && (
-                                                            <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                                                <Phone className="h-3 w-3"/> {tech.phone}
-                                                            </p>
-                                                         )}
-                                                    </div>
-                                                    <div className="flex gap-1">
-                                                        <Button variant="ghost" size="icon" onClick={() => showQrCodeDialog(tech.name, tech.email, tech.password || '')}>
-                                                            <QrCode className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button variant="ghost" size="icon" onClick={() => handleResetPassword(tech)}>
-                                                            <KeyRound className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button variant="ghost" size="icon" onClick={() => { setEditingTechnician(tech); setEditedTechName(tech.name); setEditedTechEmail(tech.email); setEditedTechPhone(tech.phone || ''); setEditedTechGroup(tech.group || 'Default'); }}>
-                                                            <Pencil className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDeleteTechnician(tech.id)}>
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            )
-                                        ))
-                                    )}
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2 p-2 border-b">
+                                        <Checkbox 
+                                            id="select-all-techs"
+                                            checked={selectedTechnicians.length > 0 && selectedTechnicians.length === filteredTechnicians.length}
+                                            onCheckedChange={handleToggleSelectAll}
+                                            disabled={filteredTechnicians.length === 0}
+                                        />
+                                        <Label htmlFor="select-all-techs" className="font-semibold text-sm w-full cursor-pointer">
+                                            {selectedTechnicians.length > 0 ? `${selectedTechnicians.length} selected` : 'Select All'}
+                                        </Label>
                                     </div>
-                                </ScrollArea>
+                                    <ScrollArea className="h-[24rem] rounded-md">
+                                        <div className="p-4 space-y-2">
+                                        {!selectedGroup ? (
+                                            <p className="text-center text-muted-foreground py-10">Select a group from the list.</p>
+                                        ) : filteredTechnicians.length === 0 ? (
+                                            <p className="text-center text-muted-foreground py-10">No technicians in this group.</p>
+                                        ) : (
+                                            filteredTechnicians.map((tech) => (
+                                                editingTechnician?.id === tech.id ? (
+                                                    <div key={tech.id} className="flex flex-col gap-2 rounded-md border p-3 bg-secondary/50">
+                                                        <Input value={editedTechName} onChange={e => setEditedTechName(e.target.value)} placeholder="Full Name" />
+                                                        <Input type="email" value={editedTechEmail} onChange={e => setEditedTechEmail(e.target.value)} placeholder="Email"/>
+                                                        <Input type="tel" value={editedTechPhone} onChange={e => setEditedTechPhone(e.target.value)} placeholder="Phone (Optional)"/>
+                                                        <Select value={editedTechGroup} onValueChange={setEditedTechGroup}>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select a group" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {allGroups.map(g => (
+                                                                    <SelectItem key={g.id} value={g.name}>{g.name}</SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <div className="flex justify-end gap-2 mt-1">
+                                                            <Button variant="ghost" size="icon" onClick={() => setEditingTechnician(null)}><X className="h-4 w-4" /></Button>
+                                                            <Button variant="ghost" size="icon" onClick={() => handleUpdateTechnician(tech)}><Check className="h-4 w-4" /></Button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div key={tech.id} className="flex items-center justify-between rounded-md border p-3 pr-1">
+                                                        <div className='flex items-center gap-3 w-full' onClick={() => handleToggleSelectTechnician(tech.id)}>
+                                                            <Checkbox 
+                                                                checked={selectedTechnicians.includes(tech.id)}
+                                                                id={`select-tech-${tech.id}`}
+                                                            />
+                                                            <div>
+                                                                <p className="font-medium">{tech.name}</p>
+                                                                <p className="text-sm text-muted-foreground">{tech.email}</p>
+                                                                {tech.phone && (
+                                                                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                                                                        <Phone className="h-3 w-3"/> {tech.phone}
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex gap-1">
+                                                            <Button variant="ghost" size="icon" onClick={(e) => {e.stopPropagation(); showQrCodeDialog(tech.name, tech.email, tech.password || '')}}>
+                                                                <QrCode className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button variant="ghost" size="icon" onClick={(e) => {e.stopPropagation(); handleResetPassword(tech)}}>
+                                                                <KeyRound className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingTechnician(tech); setEditedTechName(tech.name); setEditedTechEmail(tech.email); setEditedTechPhone(tech.phone || ''); setEditedTechGroup(tech.group || 'Default'); }}>
+                                                                <Pencil className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={(e) => {e.stopPropagation(); handleDeleteTechnician(tech.id)}}>
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            ))
+                                        )}
+                                        </div>
+                                    </ScrollArea>
+                                </div>
+                                {selectedTechnicians.length > 0 && (
+                                    <div className="mt-4 p-3 bg-muted rounded-md flex items-center justify-between gap-2 flex-wrap">
+                                        <p className="text-sm font-medium">{selectedTechnicians.length} technician(s) selected.</p>
+                                        <div className="flex gap-2 flex-wrap">
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild><Button variant="outline" size="sm"><Trash2 className="mr-2 h-4 w-4" /> Delete</Button></AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This will permanently delete the selected {selectedTechnicians.length} technician(s).</AlertDialogDescription></AlertDialogHeader>
+                                                    <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={handleBulkDelete}>Delete</AlertDialogAction></AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild><Button variant="outline" size="sm"><KeyRound className="mr-2 h-4 w-4" /> Reset Passwords</Button></AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This will reset the passwords for the selected {selectedTechnicians.length} technician(s) and require them to set a new one on next login.</AlertDialogDescription></AlertDialogHeader>
+                                                    <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={handleBulkResetPasswords}>Reset Passwords</AlertDialogAction></AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                             <Dialog open={isChangeGroupOpen} onOpenChange={setIsChangeGroupOpen}>
+                                                <DialogTrigger asChild><Button variant="outline" size="sm"><Users className="mr-2 h-4 w-4" /> Change Group</Button></DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader><DialogTitle>Change Group</DialogTitle><DialogDescription>Move {selectedTechnicians.length} technician(s) to a new group.</DialogDescription></DialogHeader>
+                                                    <div className="py-4 space-y-2">
+                                                        <Label htmlFor="group-select">New Group</Label>
+                                                        <Select value={targetGroupId} onValueChange={setTargetGroupId}>
+                                                            <SelectTrigger id="group-select"><SelectValue placeholder="Select a group" /></SelectTrigger>
+                                                            <SelectContent>
+                                                                {allGroups.map(g => (<SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <DialogFooter><DialogClose asChild><Button variant="secondary">Cancel</Button></DialogClose><Button onClick={handleBulkChangeGroup}>Move Technicians</Button></DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
+                                    </div>
+                                )}
                             </CardContent>
                          </Card>
                     </div>
