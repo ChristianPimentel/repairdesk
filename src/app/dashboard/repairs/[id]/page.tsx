@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -232,7 +233,7 @@ export default function RepairDetailsPage() {
                 <body style="text-align: center; font-family: sans-serif;">
                     <h2>Repair ID: ${repair.id.slice(-6).toUpperCase()}</h2>
                     <p>Scan to see your repair status.</p>
-                    <img src="${qrCodeUrl}" alt="Repair QR Code" />
+                    <img src="${qrCodeUrl}" alt="Repair Status QR Code" />
                     <script>
                         window.onload = () => {
                             window.print();
@@ -344,7 +345,9 @@ export default function RepairDetailsPage() {
                     <div>
                         <h3 className="font-semibold mb-2 flex items-center gap-2"><User className="h-4 w-4"/>Customer Information</h3>
                         <div className="text-sm text-muted-foreground">
-                            <p>{repair.customerName}</p>
+                            <Link href={`/dashboard/customers/${repair.customerId}`} className="text-primary hover:underline">
+                                {repair.customerName}
+                            </Link>
                         </div>
                     </div>
 

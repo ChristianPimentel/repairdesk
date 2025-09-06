@@ -664,8 +664,8 @@ body {
   height: 1px;
 }
 
-.h-\[28\.5rem\] {
-  height: 28.5rem;
+.h-\[24rem\] {
+  height: 24rem;
 }
 
 .h-\[var\(--radix-select-trigger-height\)\] {
@@ -686,10 +686,6 @@ body {
 
 .h-svh {
   height: 100svh;
-}
-
-.h-\[24rem\] {
-  height: 24rem;
 }
 
 .max-h-72 {
